@@ -15,7 +15,6 @@ import {
 import Werhouse from './Wehouse';
 import Customers from './Customers';
 import Statistics from './Statistics';
-import {Button} from 'react-native-paper';
 import Sellers from './Sellers';
 
 const Tab = createBottomTabNavigator<BottomTabType>();
@@ -25,6 +24,7 @@ const Tabs = () => {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
+        tabBarHideOnKeyboard: true,
         tabBarInactiveTintColor: '#9D9291',
         tabBarActiveTintColor: color.textColor,
         tabBarLabelStyle: {

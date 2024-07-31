@@ -2,9 +2,8 @@ import {Eye} from 'assets/icons';
 import color from 'assets/styles/color';
 import fonts from 'assets/styles/fonts';
 import React from 'react';
-import {TextInput, View} from 'react-native';
+import {Text, TextInput, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import {Icon} from 'react-native-paper';
 
 type Props = {
   value: string;
@@ -12,6 +11,7 @@ type Props = {
   placeholder: string;
   isPassword?: boolean;
   rightIcon?: React.ReactNode;
+  isPhone?: boolean;
 };
 
 export default ({
@@ -20,6 +20,7 @@ export default ({
   placeholder,
   isPassword,
   rightIcon,
+  isPhone,
 }: Props) => {
   const [isFocused, setIsFocused] = React.useState(false);
   const [eyeVisible, setEyeVisible] = React.useState(true);
@@ -37,7 +38,13 @@ export default ({
         alignItems: 'center',
         paddingHorizontal: 8,
       }}>
+      {isPhone && (
+        <Text style={{color: color.black, fontFamily: fonts.ManropeSemiBold}}>
+          +998
+        </Text>
+      )}
       <TextInput
+        maxLength={isPhone ? 12 : 100}
         onFocus={() => {
           setIsFocused(true);
         }}
@@ -51,11 +58,12 @@ export default ({
           paddingVertical: 7,
         }}
         autoCapitalize="none"
-        value={value}
+        value={isPhone ? formatPhoneNumber(value) : value}
         onChangeText={text => setValue(text)}
         placeholder={placeholder}
         placeholderTextColor={color.gray}
         secureTextEntry={isPassword ? eyeVisible : false}
+        keyboardType={isPhone ? 'phone-pad' : 'default'}
       />
       {isPassword ? (
         <TouchableOpacity onPress={() => setEyeVisible(!eyeVisible)}>
@@ -67,3 +75,16 @@ export default ({
     </View>
   );
 };
+
+function formatPhoneNumber(input: string) {
+  // Remove any non-digit characters from the input
+  let cleaned = input.replace(/\D/g, '');
+
+  // Define the pattern for formatting
+  let pattern = /(\d{2})(\d{3})(\d{2})(\d{2})/;
+
+  // Format the cleaned input according to the pattern
+  let formatted = cleaned.replace(pattern, '$1 $2 $3 $4');
+
+  return formatted;
+}

@@ -1,26 +1,31 @@
 import color from 'assets/styles/color';
+import AddBtnModal from 'components/Modals/AddButtonMoadal';
 import React from 'react';
 import {TouchableOpacity} from 'react-native';
 import {Avatar} from 'react-native-paper';
 
-type AddBtnProps = {
-  onPress?: () => void; // Function to be called when the button is pressed
-};
+const AddBtn = () => {
+  const ref = React.useRef(null);
 
-const AddBtn = ({onPress}: AddBtnProps) => {
   return (
-    <TouchableOpacity
-      style={{position: 'absolute', bottom: 20, right: 10}}
-      onPress={onPress}>
-      <Avatar.Text
-        style={{
-          backgroundColor: color.brandColor,
-        }}
-        color={color.white}
-        size={48}
-        label="+"
-      />
-    </TouchableOpacity>
+    <>
+      <TouchableOpacity
+        style={{position: 'absolute', bottom: 20, right: 10}}
+        onPress={() => {
+          // @ts-ignore
+          ref.current?.open();
+        }}>
+        <Avatar.Text
+          style={{
+            backgroundColor: color.brandColor,
+          }}
+          color={color.white}
+          size={48}
+          label="+"
+        />
+      </TouchableOpacity>
+      <AddBtnModal getRef={r => (ref.current = r)} />
+    </>
   );
 };
 

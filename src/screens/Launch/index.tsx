@@ -1,4 +1,4 @@
-import {StatusBar, Text, View} from 'react-native';
+import {StatusBar, View} from 'react-native';
 import React, {useEffect} from 'react';
 import {reset} from 'navigators/NavigationService';
 import color from 'assets/styles/color';
