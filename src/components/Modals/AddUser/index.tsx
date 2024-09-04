@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {ModalProps} from '../ModalProps';
 import Modal from 'react-native-modal';
 import {
@@ -12,16 +12,18 @@ import fonts from 'assets/styles/fonts';
 import color from 'assets/styles/color';
 import TextInput from 'components/TextInput';
 import {Button} from 'react-native-paper';
+import {api} from 'api';
 
 const AddUserModal = ({getRef}: ModalProps) => {
   const [visible, setVisible] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
 
   // form datas
-  const [name, setName] = useState('');
-  const [surname, setSurname] = useState('');
-  const [phone, setPhone] = useState('');
-  const [address, setAddress] = useState('');
+  const [username, setUsername] = useState<string>('');
+  const [fullName, setFullName] = useState<string>('');
+  const [phone, setPhone] = useState<string>('');
+  const [address, setAddress] = useState<string>('');
+  const [error, setError] = useState<string>('');
 
   useEffect(() => {
     let ref = {
@@ -36,9 +38,101 @@ const AddUserModal = ({getRef}: ModalProps) => {
     getRef(ref);
   }, [getRef]);
 
+  useEffect(() => {
+    setError('');
+  }, [username, fullName, phone, address]);
+  const createUser = useCallback(
+    (user: {
+      username?: string;
+      full_name: string;
+      phone_number: string;
+      password?: string;
+      address: string;
+      status?: number;
+    }) => {
+      if (user.full_name === '') {
+        setError('Ism Familiya bo`sh bo`lishi mumkin emas');
+        return;
+      }
+      if (user.phone_number === '') {
+        setError('Telefon raqam bo`sh bo`lishi mumkin emas');
+        return;
+      }
+      console.log(user.phone_number);
+
+      if (user.phone_number.length !== 9) {
+        setError('Telefon raqamni to`liq kiriting');
+        return;
+      }
+      if (user.address === '') {
+        setError('Manzil bo`sh bo`lishi mumkin emas');
+        return;
+      }
+      if (username === '') {
+        api
+          .post('/customers', user)
+          .then(data => {
+            console.log(data);
+            setTimeout(() => {
+              setError('Muvaffaqiyatli qo`shildi');
+            }, 1000);
+            setFullName('');
+            setPhone('');
+            setAddress('');
+          })
+          .catch(error => {
+            if (error.errors) {
+              if (error.errors.username) {
+                setError(error.errors.username.join(' '));
+              } else if (error.errors.phone_number) {
+                setError(error.errors.phone_number.join(' '));
+              } else if (error.errors.full_name) {
+                setError(error.errors.full_name.join(' '));
+              } else if (error.errors.password) {
+                setError(error.errors.password.join(' '));
+              } else if (error.errors.address) {
+                setError(error.errors.address.join(' '));
+              }
+            }
+          })
+          .finally(() => {
+            setVisible(false);
+          });
+      } else {
+        api
+          .post('/users', user)
+          .then(data => {
+            console.log(data);
+            setTimeout(() => {
+              setError('Muvaffaqiyatli qo`shildi');
+            }, 1000);
+            setFullName('');
+            setPhone('');
+            setAddress('');
+          })
+          .catch(error => {
+            // console.log(error.errors.username[0]);
+            if (error.errors) {
+              if (error.errors.phone_number) {
+                setError(error.errors.phone_number.join(' '));
+              } else if (error.errors.full_name) {
+                setError(error.errors.full_name.join(' '));
+              } else if (error.errors.address) {
+                setError(error.errors.address.join(' '));
+              }
+            }
+          })
+          .finally(() => {
+            setVisible(false);
+          });
+      }
+    },
+    [activeTab],
+  );
+
   return (
     <Modal
-      backdropOpacity={0}
+      backdropOpacity={0.7}
       isVisible={visible}
       style={styles.modal}
       deviceHeight={Dimensions.get('screen').height}
@@ -78,11 +172,35 @@ const AddUserModal = ({getRef}: ModalProps) => {
         </View>
         {activeTab === 0 && (
           <View style={styles.form}>
-            <TextInput value={name} setValue={setName} placeholder="Ism" />
+            <Text
+              numberOfLines={2}
+              style={{
+                color: error.startsWith('Muvaffaqiyatli')
+                  ? color.green
+                  : color.alizarin,
+                marginBottom: 5,
+              }}>
+              {error}
+            </Text>
             <TextInput
-              value={surname}
-              setValue={setSurname}
-              placeholder="Familiya"
+              value={fullName}
+              setValue={text => {
+                setFullName(text);
+                setUsername(text.split(' ').join('_').toLowerCase());
+              }}
+              placeholder="Ism Familiya"
+            />
+            <TextInput
+              readonly={true}
+              value={username}
+              setValue={setUsername}
+              placeholder="Username"
+            />
+            <TextInput
+              readonly={true}
+              value={username}
+              setValue={setUsername}
+              placeholder="Parol"
             />
             <TextInput
               value={phone}
@@ -98,6 +216,15 @@ const AddUserModal = ({getRef}: ModalProps) => {
             <Button
               mode="contained"
               textColor="white"
+              onPress={() => {
+                createUser({
+                  username,
+                  password: username,
+                  full_name: fullName,
+                  phone_number: phone,
+                  address,
+                });
+              }}
               style={{
                 marginTop: 10,
                 backgroundColor: color.brandColor,
@@ -109,10 +236,19 @@ const AddUserModal = ({getRef}: ModalProps) => {
         )}
         {activeTab === 1 && (
           <View style={styles.form}>
-            <TextInput value={name} setValue={setName} placeholder="Ism" />
+            <Text
+              numberOfLines={2}
+              style={{
+                color: error.startsWith('Muvaffaqiyatli')
+                  ? color.green
+                  : color.alizarin,
+                marginBottom: 5,
+              }}>
+              {error}
+            </Text>
             <TextInput
-              value={surname}
-              setValue={setSurname}
+              value={fullName}
+              setValue={setFullName}
               placeholder="Familiya"
             />
             <TextInput
@@ -127,6 +263,16 @@ const AddUserModal = ({getRef}: ModalProps) => {
               placeholder="Manzil"
             />
             <Button
+              onPress={() => {
+                console.log('create user');
+
+                createUser({
+                  full_name: fullName,
+                  phone_number: phone,
+                  address,
+                  status: 1,
+                });
+              }}
               mode="contained"
               textColor="white"
               style={{
@@ -154,7 +300,8 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 30,
     borderRadius: 10,
     width: '90%',
     backgroundColor: color.white,
@@ -174,6 +321,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: color.descColor,
     borderRadius: 100,
+    marginTop: 10,
   },
   switchBtn: {
     width: 80,

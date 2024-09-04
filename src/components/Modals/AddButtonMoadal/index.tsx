@@ -11,11 +11,14 @@ import {
 import Modal from 'react-native-modal';
 import {ModalProps} from '../ModalProps';
 import AddUserModal from '../AddUser';
+import AddCategoryModal from '../AddCategory';
+import {navigate} from 'navigators/NavigationService';
 
 const AddBtnModal = ({getRef}: ModalProps) => {
   const [visible, setVisible] = useState(false);
 
   const userModalRef = React.useRef(null);
+  const categoryModalRef = React.useRef(null);
 
   useEffect(() => {
     let ref = {
@@ -40,7 +43,12 @@ const AddBtnModal = ({getRef}: ModalProps) => {
       animationOut="fadeOutRight"
       onBackdropPress={() => setVisible(false)}>
       <View style={styles.container}>
-        <TouchableOpacity style={styles.item}>
+        <TouchableOpacity
+          onPress={() => {
+            // @ts-ignore
+            categoryModalRef.current?.open();
+          }}
+          style={styles.item}>
           <Text style={styles.text}>Kategoriya qo'shish</Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -54,7 +62,11 @@ const AddBtnModal = ({getRef}: ModalProps) => {
         <TouchableOpacity style={styles.item}>
           <Text style={styles.text}>Qarz qo'shsih\ayirish</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.item}>
+        <TouchableOpacity
+          onPress={() => {
+            navigate('AddProduct', {});
+          }}
+          style={styles.item}>
           <Text style={styles.text}>Mahsulot yaratish</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.item}>
@@ -62,12 +74,18 @@ const AddBtnModal = ({getRef}: ModalProps) => {
         </TouchableOpacity>
       </View>
       <AddUserModal getRef={r => (userModalRef.current = r)} />
+      <AddCategoryModal getRef={r => (categoryModalRef.current = r)} />
     </Modal>
   );
 };
 
 const styles = StyleSheet.create({
-  modal: {margin: 0, alignItems: 'center', justifyContent: 'center'},
+  modal: {
+    margin: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 99,
+  },
   text: {
     fontSize: 13,
     fontFamily: fonts.ManropeMedium,

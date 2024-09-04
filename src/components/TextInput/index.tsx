@@ -12,6 +12,10 @@ type Props = {
   isPassword?: boolean;
   rightIcon?: React.ReactNode;
   isPhone?: boolean;
+  readonly?: boolean;
+  width?: string | number | any | {};
+  isNumber?: boolean;
+  isRequired?: boolean;
 };
 
 export default ({
@@ -21,39 +25,59 @@ export default ({
   isPassword,
   rightIcon,
   isPhone,
+  readonly,
+  width,
+  isNumber,
+  isRequired,
 }: Props) => {
   const [isFocused, setIsFocused] = React.useState(false);
   const [eyeVisible, setEyeVisible] = React.useState(true);
+  const [valid, setValid] = React.useState(true);
 
   return (
     <View
-      style={{
-        borderWidth: isFocused ? 2 : 1.2,
-        borderColor: isFocused ? color.brandColor : color.gray,
-        borderRadius: 10,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        width: '90%',
-        marginBottom: 10,
-        alignItems: 'center',
-        paddingHorizontal: 8,
-      }}>
+      style={[
+        {
+          borderWidth: isFocused ? 2 : 1.2,
+          borderColor: isFocused
+            ? color.brandColor
+            : valid
+            ? color.gray
+            : color.alizarin,
+          borderRadius: 10,
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          width: '90%',
+          marginBottom: 10,
+          alignItems: 'center',
+          paddingHorizontal: 8,
+        },
+        width && {width},
+      ]}>
       {isPhone && (
         <Text style={{color: color.black, fontFamily: fonts.ManropeSemiBold}}>
           +998
         </Text>
       )}
       <TextInput
+        readOnly={readonly}
         maxLength={isPhone ? 12 : 100}
         onFocus={() => {
           setIsFocused(true);
         }}
         onBlur={() => {
           setIsFocused(false);
+          if (isRequired) {
+            if (value.length === 0) {
+              setValid(false);
+            } else {
+              setValid(true);
+            }
+          }
         }}
         style={{
           flex: 1,
-          color: color.black,
+          color: readonly ? color.gray : color.black,
           fontFamily: fonts.ManropeSemiBold,
           paddingVertical: 7,
         }}
@@ -63,7 +87,7 @@ export default ({
         placeholder={placeholder}
         placeholderTextColor={color.gray}
         secureTextEntry={isPassword ? eyeVisible : false}
-        keyboardType={isPhone ? 'phone-pad' : 'default'}
+        keyboardType={isPhone || isNumber ? 'phone-pad' : 'default'}
       />
       {isPassword ? (
         <TouchableOpacity onPress={() => setEyeVisible(!eyeVisible)}>

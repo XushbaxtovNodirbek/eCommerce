@@ -13,6 +13,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import Navigator from './src/navigators';
 import {_navigator} from './src/navigators/NavigationService';
 import {PaperProvider} from 'react-native-paper';
+import Toast from 'react-native-toast-message';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
       <NavigationContainer ref={_navigator}>
         <Navigator />
       </NavigationContainer>
+      <Toast />
     </SafeAreaProvider>
   );
 }

@@ -4,9 +4,11 @@ import React from 'react';
 import {Text, View} from 'react-native';
 
 const Statistics = () => {
+  const addBtnRef = React.useRef(null);
+
   return (
     <View style={globalStyles.center}>
-      <AddBtn />
+      <AddBtn getRef={r => (addBtnRef.current = r)} />
     </View>
   );
 };

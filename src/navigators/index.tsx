@@ -1,5 +1,13 @@
 import {createStackNavigator} from '@react-navigation/stack';
-import {Auth, Launch, Main, Statistics, Tabs} from 'screens';
+import {
+  AddProduct,
+  Auth,
+  Launch,
+  Main,
+  Setting,
+  Statistics,
+  Tabs,
+} from 'screens';
 import {NavigatorType} from '../types';
 import Werhouse from 'screens/Tabs/Wehouse';
 
@@ -17,6 +25,8 @@ function Navigator() {
       <Stack.Screen name="Tabs" component={Tabs} />
       <Stack.Screen name="Werhouse" component={Werhouse} />
       <Stack.Screen name="Statistics" component={Statistics} />
+      <Stack.Screen name="Setting" component={Setting} />
+      <Stack.Screen name="AddProduct" component={AddProduct} />
     </Stack.Navigator>
   );
 }

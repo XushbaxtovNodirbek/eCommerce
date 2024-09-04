@@ -35,7 +35,7 @@ const Auth = () => {
       .then(response => {
         showToast('success', 'Tabriklaymiz', 'Siz dasturga kirdingiz!');
         setUserData({auth_token: get(response, 'data.access_token', '')});
-        setToken(get(response, 'access_token', ''));
+        setToken(get(response, 'data.access_token', ''));
         reset('Tabs', 0);
       })
       .catch(error => {

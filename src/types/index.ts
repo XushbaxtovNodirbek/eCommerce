@@ -3,15 +3,14 @@ export type NavigatorType = {
   Home: {
     id: 18;
   };
-  Setting: {
-    route: 'name';
-  };
   Auth: undefined;
   Tabs: undefined;
   Werhouse: undefined;
   Customers: undefined;
   Statistics: undefined;
   Sellers: undefined;
+  Setting: undefined;
+  AddProduct: undefined;
 };
 export type BottomTabType = {
   Home: undefined;
@@ -30,4 +29,5 @@ export type screens =
   | 'Tabs'
   | 'Statistics'
   | 'Sellers'
+  | 'AddProduct'
   | 'Werhouse';

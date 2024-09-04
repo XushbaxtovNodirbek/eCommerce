@@ -6,8 +6,19 @@ import WerhouseTab from './WerhouseTab';
 import CustomersTab from './CustomersTab';
 import StatisticsTab from './StatisticsTab';
 import SellersTab from './SellersTab';
+import Settings from './Settings';
+import LogOutIcon from './LogOutIcon';
+import ArrowDown from './ArrowDown';
+import CallIcon from './CallIcon';
+import SearchIcon from './SearchIcon';
+import ScanIcon from './ScanIcon';
+import CloseIcon from './CloseIcon';
+import EditIcon from './EditIcon';
 
 export {
+  ScanIcon,
+  SearchIcon,
+  CallIcon,
   ArrowLeft,
   Eye,
   Person,
@@ -16,4 +27,9 @@ export {
   CustomersTab,
   StatisticsTab,
   SellersTab,
+  Settings,
+  LogOutIcon,
+  ArrowDown,
+  CloseIcon,
+  EditIcon,
 };

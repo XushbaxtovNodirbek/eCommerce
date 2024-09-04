@@ -4,9 +4,10 @@ import React from 'react';
 import {Text, View} from 'react-native';
 
 const Sellers = () => {
+  const addBtnRef = React.useRef(null);
   return (
     <View style={globalStyles.center}>
-      <AddBtn />
+      <AddBtn getRef={r => (addBtnRef.current = r)} />
     </View>
   );
 };

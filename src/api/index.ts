@@ -62,7 +62,7 @@ api.interceptors.response.use(
 
       // unprocessable
       case 422: {
-        return Promise.reject(new APIError(err.message, 422));
+        return Promise.reject(err.response?.data);
       }
 
       // generic api error (server related) unexpected

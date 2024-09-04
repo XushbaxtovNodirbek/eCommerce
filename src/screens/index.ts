@@ -6,5 +6,18 @@ import Customers from './Tabs/Customers';
 import Tabs from './Tabs';
 import Statistics from './Tabs/Statistics';
 import Sellers from './Tabs/Sellers';
+import Setting from './Setting';
+import AddProduct from './Product/AddProduct';
 
-export {Launch, Main, Auth, Tabs, Werhouse, Customers, Statistics, Sellers};
+export {
+  Launch,
+  Main,
+  Auth,
+  Tabs,
+  Werhouse,
+  Customers,
+  Statistics,
+  Sellers,
+  Setting,
+  AddProduct,
+};
