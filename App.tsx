@@ -12,7 +12,6 @@ import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {NavigationContainer} from '@react-navigation/native';
 import Navigator from './src/navigators';
 import {_navigator} from './src/navigators/NavigationService';
-import {PaperProvider} from 'react-native-paper';
 import Toast from 'react-native-toast-message';
 
 function App() {
@@ -21,7 +20,7 @@ function App() {
       <NavigationContainer ref={_navigator}>
         <Navigator />
       </NavigationContainer>
-      <Toast />
+      <Toast onPress={() => Toast.hide()} />
     </SafeAreaProvider>
   );
 }

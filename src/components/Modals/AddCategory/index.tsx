@@ -8,6 +8,7 @@ import TextInput from 'components/TextInput';
 import {Dropdown} from 'react-native-element-dropdown';
 import {api} from 'api';
 import {Button} from 'react-native-paper';
+import logger from 'helpers/logger';
 
 const AddCategoryModal = ({getRef}: ModalProps) => {
   const [units, setUnits] = useState([]);
@@ -41,7 +42,7 @@ const AddCategoryModal = ({getRef}: ModalProps) => {
         setUnits(data.data);
       })
       .catch(err => {
-        console.log(err);
+        logger(err);
       });
   }, []);
 
@@ -59,14 +60,14 @@ const AddCategoryModal = ({getRef}: ModalProps) => {
       api
         .post('/categories', category)
         .then(data => {
-          console.log(data);
+          logger(data);
           setName('');
           setSelected('');
           setError('');
           setVisible(false);
         })
         .catch(err => {
-          console.log(err);
+          logger(err);
           setError('Xatolik yuz berdi');
         });
     },

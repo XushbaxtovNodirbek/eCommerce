@@ -7,6 +7,7 @@ import fonts from 'assets/styles/fonts';
 import TextInput from 'components/TextInput';
 import {Button, Switch} from 'react-native-paper';
 import {api} from 'api';
+import logger from 'helpers/logger';
 
 const UnitModal = ({getRef}: ModalProps) => {
   const [visible, setVisible] = React.useState(false);
@@ -58,20 +59,20 @@ const UnitModal = ({getRef}: ModalProps) => {
             value_type,
           })
           .then(data => {
-            console.log(data);
+            logger(data);
             setError('Muvaffaqiyatli yangilandi');
             setTimeout(() => {
               setVisible(false);
             }, 2000);
           })
           .catch(err => {
-            console.log(err);
+            logger(err);
           });
       } else {
         api
           .post('/units', {name, value_type})
           .then(data => {
-            console.log(data);
+            logger(data);
             setStr('');
             setIsSwitchOn(false);
             setTimeout(() => {
@@ -79,7 +80,7 @@ const UnitModal = ({getRef}: ModalProps) => {
             }, 500);
           })
           .catch(err => {
-            console.log(err);
+            logger(err);
           });
       }
     },

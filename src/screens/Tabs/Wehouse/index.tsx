@@ -4,6 +4,8 @@ import color from 'assets/styles/color';
 import fonts from 'assets/styles/fonts';
 import globalStyles from 'assets/styles/globalStyles';
 import {AddAmount, AddBtn, TextInput} from 'components';
+import logger from 'helpers/logger';
+import {navigate} from 'navigators/NavigationService';
 import React, {useCallback, useEffect} from 'react';
 import {
   Alert,
@@ -18,7 +20,7 @@ import {RefreshControl, Swipeable} from 'react-native-gesture-handler';
 import {Avatar} from 'react-native-paper';
 
 const {width, height} = Dimensions.get('window');
-const Werhouse = () => {
+const Werhouse = ({navigation}: any) => {
   const [search, setSearch] = React.useState('');
   const [tabs, setTabs] = React.useState([{id: 0, name: 'Barchasi'}]);
   const [activeTab, setActiveTab] = React.useState(0);
@@ -32,6 +34,11 @@ const Werhouse = () => {
   useEffect(() => {
     getCategories();
     getProducts(0, search);
+
+    return navigation.addListener('focus', () => {
+      getCategories();
+      getProducts(0, search);
+    });
   }, []);
 
   useEffect(() => {
@@ -55,7 +62,7 @@ const Werhouse = () => {
         setTabs(newTabs);
       })
       .catch(err => {
-        console.log('getCategories', err);
+        logger(err);
       });
   }, []);
 
@@ -71,7 +78,7 @@ const Werhouse = () => {
         setProducts(res.data);
       })
       .catch(err => {
-        console.log('getProducts', err);
+        logger(err);
       })
       .finally(() => setRefreshing(false));
   }, []);
@@ -120,7 +127,7 @@ const Werhouse = () => {
         <View style={{alignItems: 'center'}}>
           <TouchableOpacity
             style={[styles.leftAction, {backgroundColor: color.white}]}
-            onPress={() => Alert.alert('More action triggered!')}>
+            onPress={() => navigate('AddProduct', {item})}>
             <EditIcon size={24} />
           </TouchableOpacity>
           <Text style={[styles.textStyle, {fontSize: 11}]}>Tahrirlash</Text>

@@ -6,12 +6,13 @@ import globalStyles from 'assets/styles/globalStyles';
 import {Avatar} from 'react-native-paper';
 import useStore from 'store';
 import {setToken} from 'api';
+import logger from 'helpers/logger';
 
 const Launch = () => {
   const {userData} = useStore();
 
   useEffect(() => {
-    console.log(userData);
+    logger(userData);
 
     setTimeout(() => {
       if (userData.auth_token) {
@@ -24,7 +25,10 @@ const Launch = () => {
   }, []);
   return (
     <View
-      style={[{flex: 1, backgroundColor: color.white}, globalStyles.center]}>
+      style={[
+        {flex: 1, backgroundColor: color.white, justifyContent: 'center'},
+        globalStyles.center,
+      ]}>
       <StatusBar barStyle="dark-content" backgroundColor={color.white} />
       <Avatar.Text size={150} label="RN" />
     </View>

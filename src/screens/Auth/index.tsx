@@ -6,7 +6,7 @@ import {
   ScrollView,
   View,
 } from 'react-native';
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import globalStyles from 'assets/styles/globalStyles';
 import color from 'assets/styles/color';
 import {ActivityIndicator, Avatar, Button, Text} from 'react-native-paper';
@@ -24,6 +24,10 @@ const Auth = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const {setUserData, userData} = useStore();
+
+  useEffect(() => {
+    setUserData({auth_token: ''});
+  }, []);
 
   const loginHandler = useCallback((login: string, password: string) => {
     setLoading(true);

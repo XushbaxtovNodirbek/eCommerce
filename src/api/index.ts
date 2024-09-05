@@ -1,4 +1,5 @@
 import axios, {AxiosError, AxiosResponse} from 'axios';
+import {reset} from 'navigators/NavigationService';
 
 const baseURL = __DEV__
   ? 'http://api.vodiy-yulduzlari.uz'
@@ -37,6 +38,7 @@ api.interceptors.response.use(
     switch (status) {
       // authentication (token related issues)
       case 401: {
+        reset('Auth', 0);
         return Promise.reject(new APIError(err.message, 401));
       }
 

@@ -7,17 +7,22 @@ import fonts from 'assets/styles/fonts';
 import TextInput from 'components/TextInput';
 import {Button} from 'react-native-paper';
 import {api} from 'api';
+import logger from 'helpers/logger';
 
 const AddAmount = ({getRef}: ModalProps) => {
   const [visible, setVisible] = React.useState(false);
-  const [data, setData] = React.useState<any>();
+  const [product, setProduct] = React.useState<any>();
   const [error, setError] = React.useState('');
   // false 1
   // true 2
+  const [price, setPrice] = React.useState('');
+  const [amount, setAmount] = React.useState('');
+  const [sale_price, setSalePrice] = React.useState('');
+  const [sale_price_min, setSalePriceMin] = React.useState('');
 
   useEffect(() => {
     setError('');
-  }, [data]);
+  }, []);
 
   useEffect(() => {
     setTimeout(() => {
@@ -27,9 +32,9 @@ const AddAmount = ({getRef}: ModalProps) => {
 
   useEffect(() => {
     let ref = {
-      open: (data: any) => {
+      open: (prod: any) => {
         setVisible(true);
-        setData(data);
+        setProduct(prod);
       },
       close: () => {
         setVisible(false);
@@ -39,24 +44,32 @@ const AddAmount = ({getRef}: ModalProps) => {
     getRef(ref);
   }, [getRef]);
 
-  const handleSave = useCallback(
-    (product: any) => {
-      if (!product.remind) {
-        setError('Miqdorni kiriting');
-        return;
-      }
-      api
-        .post('/products/' + product.id, {...product, amount: product.remind})
-        .then(res => {
-          setError('Muvaffaqiyatli saqlandi');
-        })
-        .catch(err => {
-          setError('Xatolik yuz berdi');
-          console.log('handleSave', err);
-        });
-    },
-    [data],
-  );
+  const handleSave = useCallback(() => {
+    if (!amount || !price || !sale_price) {
+      setError("Majburiy maydonlarni to'ldiring");
+      return;
+    }
+    api
+      .post('/products/add-amount/' + product.id, {
+        price: Number(price),
+        amount: Number(amount),
+        sale_price: Number(sale_price),
+        sale_price_min: Number(sale_price_min) || Number(sale_price),
+      })
+      .then(res => {
+        setError('Muvaffaqiyatli saqlandi');
+        setAmount('');
+        setPrice('');
+        setSalePrice('');
+        setSalePriceMin('');
+        logger(res);
+        setVisible(false);
+      })
+      .catch(err => {
+        setError('Xatolik yuz berdi');
+        logger(err);
+      });
+  }, [price, amount, sale_price, sale_price_min]);
 
   return (
     <Modal
@@ -69,7 +82,7 @@ const AddAmount = ({getRef}: ModalProps) => {
       onBackdropPress={() => setVisible(false)}>
       <View style={styles.container}>
         <Text style={styles.title}>
-          {data ? data?.name : 'Birlik yaratish'}
+          {product ? product?.name : 'Birlik yaratish'}
         </Text>
         <Text
           style={{
@@ -82,10 +95,32 @@ const AddAmount = ({getRef}: ModalProps) => {
         </Text>
         <TextInput
           isNumber
-          value={data?.remind ? data.remind : ''}
-          setValue={value => {
-            setData({...data, remind: value});
-          }}
+          isRequired
+          value={price}
+          setValue={setPrice}
+          placeholder="Kelish narxi kiriting"
+          rightIcon={<Text style={styles.text2}>so'm</Text>}
+        />
+        <TextInput
+          isNumber
+          isRequired
+          value={sale_price}
+          setValue={setSalePrice}
+          placeholder="Sotish narxi kiriting"
+          rightIcon={<Text style={styles.text2}>so'm</Text>}
+        />
+        <TextInput
+          isNumber
+          value={sale_price_min}
+          setValue={setSalePriceMin}
+          placeholder="Sotish narxi(min) kiriting"
+          rightIcon={<Text style={styles.text2}>so'm</Text>}
+        />
+        <TextInput
+          isNumber
+          isRequired
+          value={amount}
+          setValue={setAmount}
           placeholder="Sonni kiriting"
         />
 
@@ -93,7 +128,7 @@ const AddAmount = ({getRef}: ModalProps) => {
           style={{backgroundColor: color.brandColor}}
           mode="contained"
           onPress={() => {
-            handleSave(data);
+            handleSave();
           }}
           textColor={color.white}>
           Saqlash

@@ -4,6 +4,7 @@ import color from 'assets/styles/color';
 import fonts from 'assets/styles/fonts';
 import globalStyles from 'assets/styles/globalStyles';
 import {AddBtn, TextInput} from 'components';
+import logger from 'helpers/logger';
 import React, {useCallback, useEffect, useState} from 'react';
 import {
   Dimensions,
@@ -62,7 +63,7 @@ const Customers = () => {
         setCustomers(res.data);
       })
       .catch(err => {
-        console.log(err);
+        logger(err);
       })
       .finally(() => {
         setRefreshing(false);
@@ -88,7 +89,7 @@ const Customers = () => {
         setCustomers([...customers, ...res.data]);
       })
       .catch(err => {
-        console.log(err);
+        logger(err);
       });
   };
 

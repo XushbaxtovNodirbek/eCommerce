@@ -7,6 +7,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   View,
+  BackHandler,
 } from 'react-native';
 import color from 'assets/styles/color';
 import fonts from 'assets/styles/fonts';
@@ -17,22 +18,27 @@ import {ScanIcon} from 'assets/icons';
 import {Button} from 'react-native-paper';
 import ScannerModal from './../../components/Modals/ScannerModal';
 import Toast from 'react-native-toast-message';
+import logger from 'helpers/logger';
 
-const AddProduct = () => {
+type Product = {
+  name: string;
+  price: string;
+  sale_price: string;
+  sale_price_min: string;
+  min_amount: string;
+  barcode: string;
+  category_id: number | null;
+  status: number;
+};
+
+const AddProduct = ({route, ...props}: any) => {
   const scannerRef = React.useRef(null);
   const [error, setError] = useState('');
   const [selected, setSelected] = useState('');
   const [categories, setCategories] = useState([]);
-  const [product, setProduct] = useState<{
-    name: string;
-    price: string;
-    sale_price: string;
-    sale_price_min: string;
-    min_amount: string;
-    barcode: string;
-    category_id: number | null;
-    status: number;
-  }>({
+  const [isCreating, setIsCreating] = useState(true);
+  const [id] = useState(route.params?.item?.id);
+  const [product, setProduct] = useState<Product>({
     name: '',
     category_id: null,
     price: '',
@@ -43,8 +49,35 @@ const AddProduct = () => {
     status: 1,
   });
 
+  logger(route);
+
   useEffect(() => {
     getCategories();
+
+    if (route.params?.item) {
+      let item = route.params.item;
+      setProduct({
+        name: item.name,
+        category_id: item.category_id,
+        price: item.price?.toString(),
+        sale_price: item.sale_price?.toString(),
+        sale_price_min: item.sale_price_min?.toString(),
+        min_amount: item.min_amount?.toString(),
+        barcode: item.barcode,
+        status: item.status,
+      });
+      setSelected(route.params.item.category_id);
+      setIsCreating(false);
+    }
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      () => {
+        props.navigation.goBack();
+        return true;
+      },
+    );
+    return () => backHandler.remove();
   }, []);
 
   useEffect(() => {
@@ -59,7 +92,7 @@ const AddProduct = () => {
         setCategories(data);
       })
       .catch(err => {
-        console.log('getCategories', err);
+        logger(err);
       });
   }, []);
 
@@ -74,39 +107,49 @@ const AddProduct = () => {
       category_id: number;
       status: number;
     }) => {
-      console.log('product', product);
-
-      api
-        .post('/products', product)
-        .then(res => {
-          Toast.show({
-            type: 'success',
-            text1: 'Muvaffaqiyatli',
-            text2: 'Mahsulot qo`shildi',
+      logger(product);
+      if (isCreating) {
+        api
+          .post('/products', product)
+          .then(res => {
+            Toast.show({
+              type: 'success',
+              text1: 'Muvaffaqiyatli',
+              text2: 'Mahsulot qo`shildi',
+            });
+            props.navigation.goBack();
+          })
+          .catch(err => {
+            Toast.show({
+              type: 'error',
+              text1: 'Xatolik',
+              text2: 'Xatolik yuz berdi',
+            });
+            logger(err);
           });
-          setProduct({
-            name: '',
-            category_id: null,
-            price: '',
-            sale_price: '',
-            sale_price_min: '',
-            min_amount: '',
-            barcode: '',
-            status: 1,
+      } else {
+        console.log('id', id);
+        api
+          .put('/products/' + id, product)
+          .then(res => {
+            Toast.show({
+              type: 'success',
+              text1: 'Muvaffaqiyatli',
+              text2: 'Mahsulot tahrirlandi',
+            });
+            props.navigation.goBack();
+          })
+          .catch(err => {
+            Toast.show({
+              type: 'error',
+              text1: 'Xatolik',
+              text2: 'Xatolik yuz berdi',
+            });
+            logger(err);
           });
-          setSelected('');
-          console.log('addProduct', res.data);
-        })
-        .catch(err => {
-          Toast.show({
-            type: 'error',
-            text1: 'Xatolik',
-            text2: 'Xatolik yuz berdi',
-          });
-          console.log('addProduct', err);
-        });
+      }
     },
-    [],
+    [id, isCreating],
   );
 
   return (
@@ -122,7 +165,9 @@ const AddProduct = () => {
           flexGrow: 1,
           paddingTop: 100,
         }}>
-        <Text style={styles.title}>Mahsulot Qo'shish</Text>
+        <Text style={styles.title}>
+          {isCreating ? "Mahsulot Qo'shish" : 'Tahrirlash'}
+        </Text>
         <Text
           numberOfLines={2}
           style={{
@@ -293,7 +338,6 @@ const styles = StyleSheet.create({
   iconStyle: {
     width: 20,
     height: 20,
-    color: color.textColor,
   },
   inputSearchStyle: {
     height: 40,

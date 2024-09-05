@@ -4,6 +4,7 @@ import color from 'assets/styles/color';
 import fonts from 'assets/styles/fonts';
 import globalStyles from 'assets/styles/globalStyles';
 import {UnitModal} from 'components';
+import logger from 'helpers/logger';
 import {navigate} from 'navigators/NavigationService';
 import React, {useCallback, useEffect, useRef} from 'react';
 import {
@@ -36,7 +37,7 @@ const Setting = () => {
         setUnits(data.data);
       })
       .catch(err => {
-        console.log(err);
+        logger(err);
       });
   }, []);
 
@@ -53,7 +54,7 @@ const Setting = () => {
         setUser(data.data);
       })
       .catch(err => {
-        console.log(err);
+        logger(err);
       })
       .finally(() => setRefreshing(false));
   }, []);

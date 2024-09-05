@@ -64,7 +64,10 @@ const AddBtnModal = ({getRef}: ModalProps) => {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
-            navigate('AddProduct', {});
+            setVisible(false);
+            setTimeout(() => {
+              navigate('AddProduct', {});
+            }, 300);
           }}
           style={styles.item}>
           <Text style={styles.text}>Mahsulot yaratish</Text>

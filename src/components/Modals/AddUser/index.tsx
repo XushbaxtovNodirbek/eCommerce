@@ -13,6 +13,7 @@ import color from 'assets/styles/color';
 import TextInput from 'components/TextInput';
 import {Button} from 'react-native-paper';
 import {api} from 'api';
+import logger from 'helpers/logger';
 
 const AddUserModal = ({getRef}: ModalProps) => {
   const [visible, setVisible] = useState(false);
@@ -58,7 +59,6 @@ const AddUserModal = ({getRef}: ModalProps) => {
         setError('Telefon raqam bo`sh bo`lishi mumkin emas');
         return;
       }
-      console.log(user.phone_number);
 
       if (user.phone_number.length !== 9) {
         setError('Telefon raqamni to`liq kiriting');
@@ -72,7 +72,7 @@ const AddUserModal = ({getRef}: ModalProps) => {
         api
           .post('/customers', user)
           .then(data => {
-            console.log(data);
+            logger(data);
             setTimeout(() => {
               setError('Muvaffaqiyatli qo`shildi');
             }, 1000);
@@ -102,7 +102,7 @@ const AddUserModal = ({getRef}: ModalProps) => {
         api
           .post('/users', user)
           .then(data => {
-            console.log(data);
+            logger(data);
             setTimeout(() => {
               setError('Muvaffaqiyatli qo`shildi');
             }, 1000);
@@ -111,7 +111,6 @@ const AddUserModal = ({getRef}: ModalProps) => {
             setAddress('');
           })
           .catch(error => {
-            // console.log(error.errors.username[0]);
             if (error.errors) {
               if (error.errors.phone_number) {
                 setError(error.errors.phone_number.join(' '));
