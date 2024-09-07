@@ -8,8 +8,9 @@ import TextInput from 'components/TextInput';
 import {Button} from 'react-native-paper';
 import {api} from 'api';
 import logger from 'helpers/logger';
+import Toast from 'react-native-toast-message';
 
-const AddAmount = ({getRef}: ModalProps) => {
+const AddAmount = ({getRef, onRefresh}: ModalProps) => {
   const [visible, setVisible] = React.useState(false);
   const [product, setProduct] = React.useState<any>();
   const [error, setError] = React.useState('');
@@ -64,10 +65,18 @@ const AddAmount = ({getRef}: ModalProps) => {
         setSalePriceMin('');
         logger(res);
         setVisible(false);
+        Toast.show({
+          type: 'success',
+          text1: 'Muvaffaqiyatli',
+          text2: 'Muvaffaqiyatli saqlandi',
+        });
       })
       .catch(err => {
         setError('Xatolik yuz berdi');
         logger(err);
+      })
+      .finally(() => {
+        onRefresh();
       });
   }, [price, amount, sale_price, sale_price_min]);
 

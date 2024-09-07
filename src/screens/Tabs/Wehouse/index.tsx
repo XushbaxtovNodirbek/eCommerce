@@ -71,8 +71,8 @@ const Werhouse = ({navigation}: any) => {
     api
       .get(
         id
-          ? `/products?filter[category_id]=${id}&include=category.unit&search=${search}`
-          : `/products?include=category.unit&search=${search}`,
+          ? `/products?filter[category_id]=${id}&sort=id&include=category.unit&search=${search}`
+          : `/products?include=category.unit&sort=id&search=${search}`,
       )
       .then(res => {
         setProducts(res.data);
@@ -139,7 +139,7 @@ const Werhouse = ({navigation}: any) => {
   return (
     <View style={globalStyles.center}>
       <AddBtn getRef={r => (addBtnRef.current = r)} />
-      <AddAmount getRef={r => (addAmount.current = r)} />
+      <AddAmount getRef={r => (addAmount.current = r)} onRefresh={onRefresh} />
       <View style={styles.searchWrapper}>
         <TextInput
           width={width - 20}
