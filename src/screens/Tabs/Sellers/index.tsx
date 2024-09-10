@@ -5,7 +5,7 @@ import fonts from 'assets/styles/fonts';
 import globalStyles from 'assets/styles/globalStyles';
 import {AddBtn} from 'components';
 import logger from 'helpers/logger';
-import React, {useCallback, useEffect} from 'react';
+import React, {memo, useCallback, useEffect} from 'react';
 import {
   ActivityIndicator,
   Dimensions,
@@ -107,9 +107,6 @@ const Sellers = () => {
   return (
     <View style={globalStyles.center}>
       <AddBtn getRef={r => (addBtnRef.current = r)} />
-      <View style={styles.searchWrapper}>
-        <Text style={styles.title}>Ishchilar</Text>
-      </View>
       <FlatList
         onEndReached={reachEnd}
         style={{width: '100%'}}
@@ -208,4 +205,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Sellers;
+export default memo(Sellers);

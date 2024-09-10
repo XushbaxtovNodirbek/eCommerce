@@ -24,6 +24,9 @@ const zustandStorage: StateStorage = {
 
 interface BearState {
   counter: number;
+  customers: any;
+  categories: any;
+  products: any;
   userData: {
     auth_token: string;
   };
@@ -38,6 +41,9 @@ const useStore = create<BearState>()(
       set => ({
         counter: 0,
         saved: [],
+        customers: {},
+        categories: [],
+        products: [],
         increase: by => set(state => ({counter: state.counter + by})),
         userData: {
           auth_token: '',

@@ -19,6 +19,7 @@ import {Button} from 'react-native-paper';
 import ScannerModal from './../../components/Modals/ScannerModal';
 import Toast from 'react-native-toast-message';
 import logger from 'helpers/logger';
+import useStore from 'store';
 
 type Product = {
   name: string;
@@ -35,7 +36,7 @@ const AddProduct = ({route, ...props}: any) => {
   const scannerRef = React.useRef(null);
   const [error, setError] = useState('');
   const [selected, setSelected] = useState('');
-  const [categories, setCategories] = useState([]);
+  const categories = useStore(state => state.categories);
   const [isCreating, setIsCreating] = useState(true);
   const [id] = useState(route.params?.item?.id);
   const [product, setProduct] = useState<Product>({
@@ -52,8 +53,6 @@ const AddProduct = ({route, ...props}: any) => {
   logger(route);
 
   useEffect(() => {
-    getCategories();
-
     if (route.params?.item) {
       let item = route.params.item;
       setProduct({
@@ -83,18 +82,6 @@ const AddProduct = ({route, ...props}: any) => {
   useEffect(() => {
     setError('');
   }, [product]);
-
-  const getCategories = useCallback(() => {
-    api
-      .get('/categories?include=unit')
-      .then(res => {
-        let data = res.data;
-        setCategories(data);
-      })
-      .catch(err => {
-        logger(err);
-      });
-  }, []);
 
   const addProduct = useCallback(
     (product: {

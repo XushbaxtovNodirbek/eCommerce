@@ -3,6 +3,7 @@ import {
   AddProduct,
   Auth,
   Launch,
+  ListView,
   Main,
   Setting,
   Statistics,
@@ -27,6 +28,7 @@ function Navigator() {
       <Stack.Screen name="Statistics" component={Statistics} />
       <Stack.Screen name="Setting" component={Setting} />
       <Stack.Screen name="AddProduct" component={AddProduct} />
+      <Stack.Screen name="ListView" component={ListView} />
     </Stack.Navigator>
   );
 }

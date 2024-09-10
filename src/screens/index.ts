@@ -8,8 +8,10 @@ import Statistics from './Tabs/Statistics';
 import Sellers from './Tabs/Sellers';
 import Setting from './Setting';
 import AddProduct from './Product/AddProduct';
+import ListView from './ListView';
 
 export {
+  ListView,
   Launch,
   Main,
   Auth,

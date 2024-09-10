@@ -15,7 +15,12 @@ const time = {
     return moment.unix(time).format(format);
   },
   toDate: timestamp => {
-    return moment.unix(timestamp).toDate();
+    const date = new Date(timestamp);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+    const year = date.getFullYear();
+
+    return `${day}.${month}.${year}`;
   },
   toTimestamp: date => {
     return moment(date).unix();

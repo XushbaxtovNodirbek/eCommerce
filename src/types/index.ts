@@ -11,6 +11,7 @@ export type NavigatorType = {
   Sellers: undefined;
   Setting: undefined;
   AddProduct: undefined;
+  ListView: undefined;
 };
 export type BottomTabType = {
   Home: undefined;
@@ -18,6 +19,7 @@ export type BottomTabType = {
   Customers: undefined;
   Statistics: undefined;
   Sellers: undefined;
+  Basket: undefined;
 };
 
 export type screens =
@@ -30,4 +32,6 @@ export type screens =
   | 'Statistics'
   | 'Sellers'
   | 'AddProduct'
+  | 'Basket'
+  | 'ListView'
   | 'Werhouse';

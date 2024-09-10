@@ -1,4 +1,5 @@
 import {api} from 'api';
+import requests from 'api/requests';
 import {EditIcon, SearchIcon} from 'assets/icons';
 import color from 'assets/styles/color';
 import fonts from 'assets/styles/fonts';
@@ -18,6 +19,7 @@ import {
 } from 'react-native';
 import {RefreshControl, Swipeable} from 'react-native-gesture-handler';
 import {Avatar} from 'react-native-paper';
+import useStore from 'store';
 
 const {width, height} = Dimensions.get('window');
 const Werhouse = ({navigation}: any) => {
@@ -26,6 +28,8 @@ const Werhouse = ({navigation}: any) => {
   const [activeTab, setActiveTab] = React.useState(0);
   const [refreshing, setRefreshing] = React.useState(false);
   const [products, setProducts] = React.useState<any>([]);
+
+  const categories = useStore(state => state.categories);
 
   const currentOffset = React.useRef(0);
   const addBtnRef = React.useRef(null);
@@ -50,20 +54,13 @@ const Werhouse = ({navigation}: any) => {
   }, [activeTab, search]);
 
   const getCategories = useCallback(() => {
-    setRefreshing(true);
-    api
-      .get('/categories?include=unit')
-      .then(res => {
-        let data = res.data;
-        let newTabs = [{id: 0, name: 'Barchasi'}];
-        data.forEach((item: any) => {
-          newTabs.push({id: item.id, name: item.name});
-        });
-        setTabs(newTabs);
-      })
-      .catch(err => {
-        logger(err);
-      });
+    requests.fetchCategories();
+    let data = categories;
+    let newTabs = [{id: 0, name: 'Barchasi'}];
+    data.forEach((item: any) => {
+      newTabs.push({id: item.id, name: item.name});
+    });
+    setTabs(newTabs);
   }, []);
 
   const getProducts = useCallback((id = 0, search = '') => {

@@ -14,6 +14,8 @@ import SearchIcon from './SearchIcon';
 import ScanIcon from './ScanIcon';
 import CloseIcon from './CloseIcon';
 import EditIcon from './EditIcon';
+import BasketTab from './BasketTab';
+import DeleteIcon from './DeleteIcon';
 
 export {
   ScanIcon,
@@ -32,4 +34,6 @@ export {
   ArrowDown,
   CloseIcon,
   EditIcon,
+  BasketTab,
+  DeleteIcon,
 };

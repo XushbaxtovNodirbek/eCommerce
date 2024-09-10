@@ -17,6 +17,8 @@ import {
 } from 'react-native';
 import {RefreshControl} from 'react-native-gesture-handler';
 import {ActivityIndicator, Avatar} from 'react-native-paper';
+import Sellers from '../Sellers';
+import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
 
 type Customer = {
   address: string;
@@ -106,7 +108,7 @@ const Customers = () => {
     currentOffset.current = newOffset;
   };
 
-  return (
+  const CustomersRoute = () => (
     <View style={globalStyles.center}>
       <View style={styles.searchWrapper}>
         <TextInput
@@ -161,6 +163,36 @@ const Customers = () => {
       />
       <AddBtn getRef={r => (addBtnRef.current = r)} />
     </View>
+  );
+
+  const SellersRoute = () => <Sellers />;
+
+  const renderScene = SceneMap({
+    first: CustomersRoute,
+    second: SellersRoute,
+  });
+  const [index, setIndex] = React.useState(0);
+  const [routes] = React.useState([
+    {key: 'first', title: 'Mijozlar'},
+    {key: 'second', title: 'Ishchilar'},
+  ]);
+
+  return (
+    <TabView
+      navigationState={{index, routes}}
+      renderScene={renderScene}
+      onIndexChange={setIndex}
+      initialLayout={{width: width}}
+      renderTabBar={props => (
+        <TabBar
+          {...props}
+          indicatorStyle={{backgroundColor: color.brandColor}}
+          style={{backgroundColor: color.white}}
+          activeColor={color.brandColor}
+          inactiveColor={color.gray}
+        />
+      )}
+    />
   );
 };
 

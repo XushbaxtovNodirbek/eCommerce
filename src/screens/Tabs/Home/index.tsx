@@ -5,6 +5,7 @@ import React, {useEffect} from 'react';
 import {ScrollView, StatusBar, View} from 'react-native';
 import useStore from 'store';
 import {useCameraPermission} from 'react-native-vision-camera';
+import requests from 'api/requests';
 
 const Main = () => {
   const {setUserData, userData} = useStore();
@@ -12,6 +13,9 @@ const Main = () => {
   const addBtnRef = React.useRef(null);
 
   useEffect(() => {
+    requests.fetchCustomers();
+    requests.fetchCategories();
+    requests.fetchProducts();
     // setUserData({auth_token: ''});
     if (!hasPermission) {
       requestPermission();

@@ -6,6 +6,7 @@ import Main from 'screens/Tabs/Home';
 import color from 'assets/styles/color';
 import fonts from 'assets/styles/fonts';
 import {
+  BasketTab,
   CustomersTab,
   HomeTab,
   SellersTab,
@@ -16,6 +17,7 @@ import Werhouse from './Wehouse';
 import Customers from './Customers';
 import Statistics from './Statistics';
 import Sellers from './Sellers';
+import Basket from './Baked';
 
 const Tab = createBottomTabNavigator<BottomTabType>();
 
@@ -117,7 +119,7 @@ const Tabs = () => {
       <Tab.Screen
         options={{
           tabBarIcon: ({focused}) => (
-            <SellersTab
+            <BasketTab
               size={22}
               color={focused ? color.brandColor : '#9D9291'}
             />
@@ -129,12 +131,12 @@ const Tabs = () => {
                 fontSize: 11,
                 color: focused ? color.brandColor : '#9D9291',
               }}>
-              Ishchilar
+              Savat
             </Text>
           ),
         }}
-        name="Sellers"
-        component={Sellers}
+        name="Basket"
+        component={Basket}
       />
       <Tab.Screen
         options={{
