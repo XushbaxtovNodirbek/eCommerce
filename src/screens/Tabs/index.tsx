@@ -38,18 +38,9 @@ const Tabs = () => {
           paddingTop: 5,
         },
         tabBarStyle: {
-          borderTopLeftRadius: 24,
-          borderTopRightRadius: 24,
           height: 70,
           borderTopWidth: 0,
-          shadowColor: Platform.OS === 'ios' ? '#EBE9E9' : '#000',
-          shadowOffset: {
-            height: -4,
-            width: 0,
-          },
-          shadowOpacity: 1,
-          shadowRadius: 12,
-          elevation: 20,
+          elevation: 19,
           backgroundColor: color.white,
         },
       }}>

@@ -7,7 +7,8 @@
     "ios": "react-native run-ios --simulator=\"iPhone 15 Pro\"",
     "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "apk": "cd android  && ./gradlew clean && ./gradlew assembleRelease && cd app/build/outputs/apk/release && curl -F document=@'app-armeabi-v7a-release.apk'  -F caption='#biz_media' 'https://api.telegram.org/bot7115072146:AAEQpA1FSwmx3ClfRpvZ2s1xoYHz2YcY_qA/sendDocument?chat_id=-1002195354955'"
   },
   "dependencies": {
     "@react-navigation/bottom-tabs": "^6.6.1",
@@ -26,6 +27,7 @@
     "react-native-modal": "^13.0.1",
     "react-native-pager-view": "^6.3.4",
     "react-native-paper": "^5.12.5",
+    "react-native-reanimated": "^3.15.1",
     "react-native-safe-area-context": "^4.9.0",
     "react-native-screens": "^3.29.0",
     "react-native-svg": "^14.1.0",

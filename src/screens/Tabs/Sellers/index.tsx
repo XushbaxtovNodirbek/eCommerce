@@ -18,6 +18,7 @@ import {
 } from 'react-native';
 import {RefreshControl} from 'react-native-gesture-handler';
 import {Avatar} from 'react-native-paper';
+import useStore from 'store';
 
 type Seller = {
   id: number;
@@ -39,16 +40,20 @@ const Sellers = () => {
   const addBtnRef = React.useRef(null);
   const currentOffset = React.useRef(0);
   const [refreshing, setRefreshing] = React.useState(false);
-  const [sellers, setSellers] = React.useState<Seller[]>([]);
+  const [sellers, setSellers] = React.useState<Seller[]>(
+    useStore(state => state.sellers.data),
+  );
   const [meta, setMeta] = React.useState<{
     currentPage: number;
     pageCount: number;
     perPage: number;
     totalCount: number;
-  }>();
+  }>(useStore(state => state.sellers._meta));
 
   useEffect(() => {
-    getSellers();
+    if (!sellers?.length) {
+      getSellers();
+    }
   }, []);
 
   const getSellers = useCallback(() => {
@@ -60,6 +65,7 @@ const Sellers = () => {
         setSellers(data);
         logger(data);
         setMeta(_meta);
+        useStore.setState({sellers: {data, _meta}});
       })
       .catch(err => {
         logger(err);

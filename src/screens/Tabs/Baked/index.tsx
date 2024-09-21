@@ -1,17 +1,15 @@
 import {api} from 'api';
+import {ArrowRight, Close} from 'assets/icons';
 import color from 'assets/styles/color';
 import fonts from 'assets/styles/fonts';
 import globalStyles from 'assets/styles/globalStyles';
 import {AddListModal} from 'components';
 import logger from 'helpers/logger';
 import numberWithSpaces from 'helpers/numberWithSpaces';
-import time from 'helpers/time';
 import {navigate} from 'navigators/NavigationService';
 import React, {useCallback, useEffect} from 'react';
 import {
-  Alert,
   FlatList,
-  Pressable,
   RefreshControl,
   StyleSheet,
   Text,
@@ -20,24 +18,35 @@ import {
 } from 'react-native';
 import {Avatar} from 'react-native-paper';
 import Toast from 'react-native-toast-message';
+import useStore from 'store';
 
 const Basket = () => {
   const addListRef = React.useRef(null);
-  const [data, setData] = React.useState(null);
+  const [data, setData] = React.useState<any>(
+    useStore(state => state.lists.data),
+  );
+  const [_meta, setMeta] = React.useState<any>(
+    useStore(state => state.lists._meta),
+  );
   const [refreshing, setRefreshing] = React.useState(false);
 
   useEffect(() => {
-    getData();
+    if (!data.length) getData();
   }, []);
 
-  const getData = useCallback((page = 1) => {
+  const getData = useCallback((page = 1, oldData = []) => {
     setRefreshing(true);
     // fetch data
     api
-      .get(`/product-lists?include=totalSum,customer&page=${page}&sort=id`)
-      .then(({data}: any) => {
-        logger({data});
-        setData(data);
+      .get(
+        `/product-lists?include=totalSum,totalProductCount,customer&page=${page}&sort=-id&per-page=8`,
+      )
+      .then(({data, _meta}: any) => {
+        logger({_meta});
+        let newData = [...oldData, ...data];
+        setData(newData);
+        setMeta(_meta);
+        useStore.setState({lists: {data: newData, _meta}});
       })
       .catch(err => {
         logger(err);
@@ -51,6 +60,40 @@ const Basket = () => {
         setRefreshing(false);
       });
   }, []);
+
+  const action = useCallback(
+    (id: number, type: 'accept' | 'return' | 'pay') => {
+      api
+        .post(`/product-lists/${type}/${id}`)
+        .then(() => {
+          Toast.show({
+            type: 'success',
+            text1: 'Muvaffaqiyatli',
+            text2: 'Amal bajarildi',
+          });
+          getData();
+        })
+        .catch(err => {
+          logger(err);
+          Toast.show({
+            type: 'error',
+            text1: 'Xatolik',
+            text2: err?.message,
+          });
+        });
+    },
+    [],
+  );
+
+  const onEndReached = useCallback(() => {
+    logger({_meta});
+
+    if (_meta?.currentPage === _meta?.pageCount) {
+      return;
+    }
+    getData(_meta?.currentPage + 1, data);
+  }, [_meta]);
+
   return (
     <View style={globalStyles.center}>
       <FlatList
@@ -70,38 +113,46 @@ const Basket = () => {
             </TouchableOpacity>
           </View>
         )}
+        onEndReached={onEndReached}
         contentContainerStyle={{paddingVertical: 10}}
         data={data}
         keyExtractor={item => item.id.toString()}
         renderItem={({item}) => (
-          <Pressable
+          <TouchableOpacity
+            activeOpacity={0.8}
             onPress={() => navigate('ListView', item)}
             style={styles.item}>
             <View style={styles.row}>
               <View>
                 <Text style={styles.itemID}>No. {item.id}</Text>
                 <Text style={styles.text1}>Kelish vaqti:</Text>
-                <Text style={styles.text1}>Tovartar soni:</Text>
+                <Text style={styles.text1}>Tovarlar soni:</Text>
                 <Text style={styles.text1}>Summa:</Text>
               </View>
               <View style={styles.right}>
                 <View
                   style={{
                     backgroundColor:
-                      item?.status === 0 ? color.lgray : color.green,
+                      item?.status === 0 ? color.gray : color.green,
                     paddingHorizontal: 10,
                     borderRadius: 10,
+                    justifyContent: 'center',
+                    alignItems: 'center',
                   }}>
-                  <Text style={styles.itemID}>
-                    {item?.status === 0 ? 'Qoralama' : 'Nimadir'}
+                  <Text style={[styles.itemID, {color: '#fff', fontSize: 14}]}>
+                    {item?.status === 0
+                      ? 'Qoralama'
+                      : item?.status === 1
+                      ? 'To`lov kutilmoqda'
+                      : 'To`lov qilindi'}
                   </Text>
                 </View>
                 <Text style={styles.text1}>
                   {item.date
                     ? convertTimestampToDate(item.date * 1000)
-                    : 'Nomalum'}
+                    : 'Belgilanmagan'}
                 </Text>
-                <Text style={styles.text1}>{item?.products?.length || 0}</Text>
+                <Text style={styles.text1}>{item?.totalProductCount || 0}</Text>
                 <Text style={styles.text1}>
                   {numberWithSpaces(item.totalSum)} so'm
                 </Text>
@@ -119,7 +170,54 @@ const Basket = () => {
               <Text style={styles.text1}>Olib keluvchi:</Text>
               <Text style={styles.text1}>{item.customer?.full_name}</Text>
             </View>
-          </Pressable>
+            {item.status === 0 ? (
+              <TouchableOpacity
+                onPress={() => action(item.id, 'accept')}
+                activeOpacity={0.8}
+                style={[
+                  styles.row,
+                  {paddingVertical: 8, backgroundColor: color.brandColor},
+                ]}>
+                <Text style={[styles.text1, {fontSize: 15, color: '#fff'}]}>
+                  Qabul qilish
+                </Text>
+                <ArrowRight size={20} color="#fff" />
+              </TouchableOpacity>
+            ) : item.status === 1 ? (
+              <View style={[styles.row, {paddingHorizontal: 0}]}>
+                <TouchableOpacity
+                  onPress={() => action(item.id, 'return')}
+                  style={[
+                    styles.row,
+                    {
+                      paddingVertical: 8,
+                      backgroundColor: color.alizarin,
+                      width: '50%',
+                    },
+                  ]}>
+                  <Text style={[styles.text1, {fontSize: 15, color: '#fff'}]}>
+                    Ortga
+                  </Text>
+                  <Close size={20} color="#fff" />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => action(item.id, 'pay')}
+                  style={[
+                    styles.row,
+                    {
+                      paddingVertical: 8,
+                      width: '50%',
+                      backgroundColor: color.green,
+                    },
+                  ]}>
+                  <Text style={[styles.text1, {fontSize: 15, color: '#fff'}]}>
+                    To'lov qilish
+                  </Text>
+                  <ArrowRight size={20} color="#fff" />
+                </TouchableOpacity>
+              </View>
+            ) : null}
+          </TouchableOpacity>
         )}
         showsVerticalScrollIndicator={false}
       />
@@ -154,7 +252,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontFamily: fonts.ManropeBold,
     color: color.textColor,
-    marginBottom: 5,
+    marginVertical: 2,
   },
   item: {
     width: '95%',
@@ -163,7 +261,8 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     alignSelf: 'center',
     elevation: 2,
-    paddingVertical: 10,
+    paddingTop: 10,
+    overflow: 'hidden',
   },
   headerTxt: {
     fontSize: 20,

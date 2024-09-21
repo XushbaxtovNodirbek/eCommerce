@@ -13,27 +13,33 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {FlatList, ScrollView, Swipeable} from 'react-native-gesture-handler';
+import {FlatList, Swipeable} from 'react-native-gesture-handler';
 import {Avatar} from 'react-native-paper';
 import useStore from 'store';
 import AddProductToListModal from './AddProductToListModal';
 import {DeleteIcon, EditIcon} from 'assets/icons';
+import UpdateProductModal from './UpdateProductModal';
 
 const ListView = ({navigation, route}: any) => {
   const [data, setData] = useState<any>(null);
   const categories = useStore(state => state.categories);
+  const [canEdit, setCanEdit] = useState(true);
 
   const modalRef = React.useRef<any>(null);
+  const modalUpdateRef = React.useRef<any>(null);
 
   useEffect(() => {
     // Add your code here
     fetchData(route.params?.id);
+    setCanEdit(route.params?.status === 0);
     logger(route.params);
   }, []);
 
   const fetchData = useCallback((id = 1) => {
     api
-      .get(`/product-histories?filter[product_list_id]=${id}&include=product`)
+      .get(
+        `/product-histories?filter[product_list_id]=${id}&include=product&sort=-id`,
+      )
       .then((res: any) => {
         logger(res);
 
@@ -43,6 +49,9 @@ const ListView = ({navigation, route}: any) => {
   }, []);
 
   const renderLeftActions = (item: any) => {
+    if (!canEdit) {
+      return null;
+    }
     return (
       <View style={styles.leftActionsContainer}>
         <View style={{alignItems: 'center'}}>
@@ -59,7 +68,15 @@ const ListView = ({navigation, route}: any) => {
                   },
                   {
                     text: 'Ha',
-                    onPress: () => {},
+                    onPress: () => {
+                      api
+                        .delete(`/product-histories/${item.id}`)
+                        .then(res => {
+                          logger(res);
+                          fetchData(route.params?.id);
+                        })
+                        .catch(logger);
+                    },
                   },
                 ],
               );
@@ -71,7 +88,9 @@ const ListView = ({navigation, route}: any) => {
         <View style={{alignItems: 'center'}}>
           <TouchableOpacity
             style={[styles.leftAction, {backgroundColor: color.white}]}
-            onPress={() => {}}>
+            onPress={() => {
+              modalUpdateRef.current.open(item);
+            }}>
             <EditIcon size={24} />
           </TouchableOpacity>
           <Text style={[styles.text, {fontSize: 11}]}>Tahrirlash</Text>
@@ -93,18 +112,26 @@ const ListView = ({navigation, route}: any) => {
           <Text style={[styles.text, {fontSize: 14, fontWeight: 'bold'}]}>
             Mahsulotlar soni:
           </Text>
+          <Text style={[styles.text, {fontSize: 14, fontWeight: 'bold'}]}>
+            Kelish vaqti:
+          </Text>
         </View>
         <View style={{alignItems: 'flex-end'}}>
           <Text style={[styles.text, {fontSize: 14, fontWeight: 'bold'}]}>
-            {route?.params?.customer?.full_name || 'nomalum'}
+            {route?.params?.customer?.full_name || 'Belgilanmagan'}
           </Text>
           <Text style={[styles.text, {fontSize: 14, fontWeight: 'bold'}]}>
             {data?._meta?.totalCount || 0} dona
           </Text>
+          <Text style={[styles.text, {fontSize: 14, fontWeight: 'bold'}]}>
+            {route?.params
+              ? convertTimestampToDate(route?.params?.date * 1000)
+              : 'Belgilanmagan'}
+          </Text>
         </View>
       </View>
       <FlatList
-        contentContainerStyle={{padding: 10}}
+        contentContainerStyle={{paddingVertical: 10}}
         style={{width: '100%'}}
         data={data?.data}
         keyExtractor={(item: any) => item.id.toString()}
@@ -117,15 +144,18 @@ const ListView = ({navigation, route}: any) => {
               flexDirection: 'row',
               justifyContent: 'space-between',
               alignItems: 'center',
+              paddingHorizontal: 10,
             }}>
             <Text style={[styles.text, {fontWeight: 'bold', fontSize: 15}]}>
               Mahsulotlar
             </Text>
-            <TouchableOpacity
-              onPress={() => modalRef.current.open(route.params?.id)}
-              activeOpacity={0.8}>
-              <Avatar.Text size={30} label="+" />
-            </TouchableOpacity>
+            {canEdit && (
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => modalRef.current.open(route.params?.id)}>
+                <Avatar.Text size={30} label="+" />
+              </TouchableOpacity>
+            )}
           </View>
         )}
         renderItem={({item}) => (
@@ -195,6 +225,12 @@ const ListView = ({navigation, route}: any) => {
           fetchData(route.params?.id);
         }}
       />
+      <UpdateProductModal
+        getRef={r => (modalUpdateRef.current = r)}
+        onRefresh={() => {
+          fetchData(route.params?.id);
+        }}
+      />
     </View>
   );
 };
@@ -213,16 +249,18 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
+    elevation: 3,
   },
   item: {
-    width: '100%',
+    width: '95%',
     height: 80,
     backgroundColor: color.white,
-    elevation: 5,
+    elevation: 3,
     marginVertical: 5,
     borderRadius: 10,
     flexDirection: 'row',
     alignItems: 'center',
+    alignSelf: 'center',
     justifyContent: 'space-between',
     padding: 10,
   },
@@ -254,5 +292,13 @@ const styles = StyleSheet.create({
     fontFamily: fonts.ManropeMedium,
   },
 });
+function convertTimestampToDate(timestamp: number) {
+  const date = new Date(timestamp);
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+  const year = date.getFullYear();
+
+  return `${day}.${month}.${year}`;
+}
 
 export default ListView;

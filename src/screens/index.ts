@@ -9,6 +9,7 @@ import Sellers from './Tabs/Sellers';
 import Setting from './Setting';
 import AddProduct from './Product/AddProduct';
 import ListView from './ListView';
+import CustomerInfo from './CustomerInfo';
 
 export {
   ListView,
@@ -22,4 +23,5 @@ export {
   Sellers,
   Setting,
   AddProduct,
+  CustomerInfo,
 };

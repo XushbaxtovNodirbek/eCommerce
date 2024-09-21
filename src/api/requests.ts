@@ -7,8 +7,9 @@ export default {
   fetchCustomers: (search = '') => {
     api
       .get(`customer?search=${search}`)
-      .then(res => {
-        useStore.setState({customers: res});
+      // @ts-ignore
+      .then(({data, _meta}) => {
+        useStore.setState({customers: {data, _meta}});
       })
       .catch(err => {
         logger(err);
@@ -36,11 +37,25 @@ export default {
   },
   fetchProducts: (search = '') => {
     api
-      .get(
-        `/products?filter[category_id]=1&include=category.unit&sort=id&search=${search}`,
-      )
+      .get(`/products?include=category.unit&sort=id&search=${search}`)
       .then(({data}) => {
         useStore.setState({products: data});
+      })
+      .catch(err => {
+        logger(err);
+        Toast.show({
+          type: 'error',
+          text1: 'Xatolik',
+          text2: "Ma'lumotlar olishda xatolik yuz berdi",
+        });
+      });
+  },
+  fetchSellers: () => {
+    api
+      .get('/users?filter[user_role]=seller')
+      // @ts-ignore
+      .then(({data, _meta}) => {
+        useStore.setState({sellers: {data, _meta}});
       })
       .catch(err => {
         logger(err);

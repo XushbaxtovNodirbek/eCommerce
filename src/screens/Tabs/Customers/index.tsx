@@ -5,7 +5,7 @@ import fonts from 'assets/styles/fonts';
 import globalStyles from 'assets/styles/globalStyles';
 import {AddBtn, TextInput} from 'components';
 import logger from 'helpers/logger';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {
   Dimensions,
   FlatList,
@@ -19,6 +19,8 @@ import {RefreshControl} from 'react-native-gesture-handler';
 import {ActivityIndicator, Avatar} from 'react-native-paper';
 import Sellers from '../Sellers';
 import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
+import {navigate} from 'navigators/NavigationService';
+import useStore from 'store';
 
 type Customer = {
   address: string;
@@ -38,132 +40,148 @@ type Customer = {
 };
 
 const Customers = () => {
-  const [customers, setCustomers] = useState<Customer[]>([]);
-  const [meta, setMeta] = useState<{
-    currentPage: number;
-    pageCount: number;
-    perPage: number;
-    totalCount: number;
-  }>();
-  const [search, setSearch] = useState('');
-  const [refreshing, setRefreshing] = useState(false);
+  const CustomersRoute = useCallback(() => {
+    const [customers, setCustomers] = useState<Customer[]>(
+      useStore(state => state.customers.data),
+    );
+    const [meta, setMeta] = useState<{
+      currentPage: number;
+      pageCount: number;
+      perPage: number;
+      totalCount: number;
+    }>(useStore(state => state.customers._meta));
+    const [search, setSearch] = useState('');
+    const [refreshing, setRefreshing] = useState(false);
 
-  const addBtnRef = React.useRef(null);
-  const currentOffset = React.useRef(0);
+    const addBtnRef = React.useRef(null);
+    const currentOffset = React.useRef(0);
 
-  useEffect(() => {
-    getCustomers();
-  }, [search]);
+    useEffect(() => {
+      if (!customers.length) getCustomers();
+    }, [search]);
 
-  const getCustomers = useCallback(() => {
-    setRefreshing(true);
-    api
-      .get(`/customers`)
-      .then(res => {
+    const getCustomers = useCallback(() => {
+      setRefreshing(true);
+      api
+        .get(`/customers`)
+        .then(res => {
+          // @ts-ignore
+          setMeta(res?._meta);
+          setCustomers(res.data);
+          // @ts-ignore
+          useStore.setState({customers: {data: res.data, _meta: res?._meta}});
+        })
+        .catch(err => {
+          logger(err);
+        })
+        .finally(() => {
+          setRefreshing(false);
+        });
+    }, []);
+
+    const onRefresh = useCallback(() => {
+      getCustomers();
+    }, [search]);
+
+    const reachEnd = () => {
+      console.log(meta?.currentPage, meta?.pageCount);
+
+      if (meta?.currentPage === meta?.pageCount) {
+        return;
+      }
+      api
         // @ts-ignore
-        setMeta(res?._meta);
-        setCustomers(res.data);
-      })
-      .catch(err => {
-        logger(err);
-      })
-      .finally(() => {
-        setRefreshing(false);
-      });
-  }, []);
+        .get(`/customers?page=${meta?.currentPage + 1}`)
+        .then((res: any) => {
+          setMeta(res?._meta);
+          let newCustomers = [...customers, ...res.data];
+          setCustomers(newCustomers);
 
-  const onRefresh = useCallback(() => {
-    getCustomers();
-  }, [search]);
+          useStore.setState({
+            customers: {data: newCustomers, _meta: res?._meta},
+          });
+        })
+        .catch(err => {
+          logger(err);
+        });
+    };
 
-  const reachEnd = () => {
-    console.log(meta?.currentPage, meta?.pageCount);
-
-    if (meta?.currentPage === meta?.pageCount) {
-      return;
-    }
-    api
-      // @ts-ignore
-      .get(`/customers?page=${meta?.currentPage + 1}`)
-      .then(res => {
+    const onScroll = (event: any) => {
+      const newOffset = event.nativeEvent.contentOffset.y;
+      if (newOffset > currentOffset.current) {
         // @ts-ignore
-        setMeta(res?._meta);
-        setCustomers([...customers, ...res.data]);
-      })
-      .catch(err => {
-        logger(err);
-      });
-  };
+        addBtnRef.current?.hide();
+      } else {
+        // @ts-ignore
+        addBtnRef.current?.show();
+      }
 
-  const onScroll = (event: any) => {
-    const newOffset = event.nativeEvent.contentOffset.y;
-    if (newOffset > currentOffset.current) {
-      // @ts-ignore
-      addBtnRef.current?.hide();
-    } else {
-      // @ts-ignore
-      addBtnRef.current?.show();
-    }
-
-    currentOffset.current = newOffset;
-  };
-
-  const CustomersRoute = () => (
-    <View style={globalStyles.center}>
-      <View style={styles.searchWrapper}>
-        <TextInput
-          width={width - 20}
-          value={search}
-          setValue={setSearch}
-          placeholder="Qidirish..."
-          rightIcon={<SearchIcon size={20} />}
-        />
-      </View>
-      <FlatList
-        onEndReached={reachEnd}
-        style={{width: '100%'}}
-        data={customers}
-        onScroll={onScroll}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-        ListFooterComponent={() => (
-          <ActivityIndicator
-            size={'small'}
-            style={[
-              {margin: 10},
-              meta?.currentPage === meta?.pageCount && {display: 'none'},
-            ]}
+      currentOffset.current = newOffset;
+    };
+    return (
+      <View style={globalStyles.center}>
+        <View style={styles.searchWrapper}>
+          <TextInput
+            width={width - 20}
+            value={search}
+            setValue={setSearch}
+            placeholder="Qidirish..."
+            rightIcon={<SearchIcon size={20} />}
           />
-        )}
-        keyExtractor={item => item?.id.toString()}
-        renderItem={({item}) => {
-          return (
-            <TouchableOpacity activeOpacity={0.8} style={styles.item}>
-              <View style={styles.itemLeftComp}>
-                <Avatar.Text size={40} label={item.full_name[0]} />
-                <View style={{gap: 5}}>
-                  <Text style={styles.full_name}>{item.full_name}</Text>
-                  <Text style={styles.balance}>
-                    {'Balans: '}
-                    {item.balance.balance}
-                  </Text>
-                </View>
-              </View>
+        </View>
+        <FlatList
+          onEndReached={reachEnd}
+          style={{width: '100%'}}
+          data={customers}
+          onScroll={onScroll}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          ListFooterComponent={() => (
+            <ActivityIndicator
+              size={'small'}
+              style={[
+                {margin: 10},
+                meta?.currentPage === meta?.pageCount && {display: 'none'},
+              ]}
+            />
+          )}
+          keyExtractor={item => item?.id.toString()}
+          renderItem={({item}) => {
+            return (
               <TouchableOpacity
-                onPress={() => {
-                  Linking.openURL(`tel:${item.phone_number}`);
-                }}
-                style={styles.call}>
-                <CallIcon size={20} color={color.white} />
+                onPress={() => navigate('CustomerInfo', item)}
+                activeOpacity={0.8}
+                style={styles.item}>
+                <View style={styles.itemLeftComp}>
+                  <Avatar.Text size={40} label={item.full_name[0]} />
+                  <View style={{gap: 5}}>
+                    <Text style={styles.full_name}>{item.full_name}</Text>
+                    <Text
+                      style={[
+                        styles.balance,
+                        item.balance.balance >= 0 && {color: 'green'},
+                      ]}>
+                      {'Balans: '}
+                      {item.balance.balance}
+                    </Text>
+                  </View>
+                </View>
+                <TouchableOpacity
+                  onPress={() => {
+                    Linking.openURL(`tel:${item.phone_number}`);
+                  }}
+                  style={styles.call}>
+                  <CallIcon size={20} color={color.white} />
+                </TouchableOpacity>
               </TouchableOpacity>
-            </TouchableOpacity>
-          );
-        }}
-      />
-      <AddBtn getRef={r => (addBtnRef.current = r)} />
-    </View>
-  );
+            );
+          }}
+        />
+        <AddBtn getRef={r => (addBtnRef.current = r)} />
+      </View>
+    );
+  }, []);
 
   const SellersRoute = () => <Sellers />;
 
@@ -201,7 +219,7 @@ const width = Dimensions.get('window').width;
 const styles = StyleSheet.create({
   searchWrapper: {
     width: '100%',
-    height: 55,
+    height: 70,
     backgroundColor: color.white,
     elevation: 5,
     justifyContent: 'center',

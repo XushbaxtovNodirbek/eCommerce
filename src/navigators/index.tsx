@@ -2,6 +2,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {
   AddProduct,
   Auth,
+  CustomerInfo,
   Launch,
   ListView,
   Main,
@@ -29,6 +30,7 @@ function Navigator() {
       <Stack.Screen name="Setting" component={Setting} />
       <Stack.Screen name="AddProduct" component={AddProduct} />
       <Stack.Screen name="ListView" component={ListView} />
+      <Stack.Screen name="CustomerInfo" component={CustomerInfo} />
     </Stack.Navigator>
   );
 }

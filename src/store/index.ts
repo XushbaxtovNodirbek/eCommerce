@@ -24,7 +24,18 @@ const zustandStorage: StateStorage = {
 
 interface BearState {
   counter: number;
-  customers: any;
+  customers: {
+    data: any[];
+    _meta: any;
+  };
+  sellers: {
+    data: any[];
+    _meta: any;
+  };
+  lists: {
+    data: any[];
+    _meta: any;
+  };
   categories: any;
   products: any;
   userData: {
@@ -39,9 +50,20 @@ const useStore = create<BearState>()(
   devtools(
     persist(
       set => ({
+        lists: {
+          data: [],
+          _meta: {},
+        },
         counter: 0,
         saved: [],
-        customers: {},
+        sellers: {
+          data: [],
+          _meta: {},
+        },
+        customers: {
+          data: [],
+          _meta: {},
+        },
         categories: [],
         products: [],
         increase: by => set(state => ({counter: state.counter + by})),

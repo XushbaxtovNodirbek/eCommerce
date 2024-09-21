@@ -16,6 +16,8 @@ import CloseIcon from './CloseIcon';
 import EditIcon from './EditIcon';
 import BasketTab from './BasketTab';
 import DeleteIcon from './DeleteIcon';
+import ArrowRight from './ArrowRight';
+import Close from './Close';
 
 export {
   ScanIcon,
@@ -36,4 +38,6 @@ export {
   EditIcon,
   BasketTab,
   DeleteIcon,
+  ArrowRight,
+  Close,
 };

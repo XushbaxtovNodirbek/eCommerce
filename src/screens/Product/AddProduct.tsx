@@ -180,7 +180,9 @@ const AddProduct = ({route, ...props}: any) => {
           data={categories}
           search
           maxHeight={300}
+          // @ts-ignore
           labelField="name"
+          // @ts-ignore
           valueField="id"
           placeholder="Kategoriya tanlang..."
           searchPlaceholder="Search..."
