@@ -57,13 +57,6 @@ const ScannerModal = ({getRef, getCode}: ModalProps) => {
       backdropOpacity={1}
       style={styles.modal}
       isVisible={visible}>
-      <TouchableOpacity
-        onPress={() => {
-          setVisible(false);
-        }}
-        style={{position: 'absolute', right: 15, top: 15}}>
-        <CloseIcon color="white" size={20} />
-      </TouchableOpacity>
       <View style={styles.container}>
         {device && (
           <Camera
