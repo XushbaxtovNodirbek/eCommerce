@@ -8,6 +8,7 @@ import {
   Platform,
   View,
   BackHandler,
+  StatusBar,
 } from 'react-native';
 import color from 'assets/styles/color';
 import fonts from 'assets/styles/fonts';
@@ -289,7 +290,7 @@ const AddProduct = ({route, ...props}: any) => {
           textColor="white"
           style={{
             width: '100%',
-            marginTop: 10,
+            marginTop: 30,
             backgroundColor: color.brandColor,
             borderRadius: 10,
             bottom: 10,
@@ -314,7 +315,7 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 8,
     height: 45,
-    marginBottom: 10,
+    marginTop: 10,
   },
   placeholderStyle: {
     fontSize: 16,

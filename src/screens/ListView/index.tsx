@@ -136,7 +136,10 @@ const ListView = ({navigation, route}: any) => {
         data={data?.data}
         keyExtractor={(item: any) => item.id.toString()}
         refreshControl={
-          <RefreshControl refreshing={false} onRefresh={fetchData} />
+          <RefreshControl
+            refreshing={false}
+            onRefresh={() => fetchData(route.params?.id)}
+          />
         }
         ListHeaderComponent={() => (
           <View
@@ -151,9 +154,8 @@ const ListView = ({navigation, route}: any) => {
             </Text>
             {canEdit && (
               <TouchableOpacity
-                activeOpacity={0.8}
                 onPress={() => modalRef.current.open(route.params?.id)}>
-                <Avatar.Text size={30} label="+" />
+                <Avatar.Text size={35} label="+" />
               </TouchableOpacity>
             )}
           </View>

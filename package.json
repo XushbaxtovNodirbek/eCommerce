@@ -11,6 +11,7 @@
     "apk": "cd android  && ./gradlew clean && ./gradlew assembleRelease && cd app/build/outputs/apk/release && curl -F document=@'app-armeabi-v7a-release.apk'  -F caption='#biz_media' 'https://api.telegram.org/bot7115072146:AAEQpA1FSwmx3ClfRpvZ2s1xoYHz2YcY_qA/sendDocument?chat_id=-1002195354955'"
   },
   "dependencies": {
+    "@gorhom/bottom-sheet": "^4",
     "@react-navigation/bottom-tabs": "^6.6.1",
     "@react-navigation/native": "^6.1.10",
     "@react-navigation/stack": "^6.3.21",

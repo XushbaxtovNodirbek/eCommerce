@@ -1,5 +1,5 @@
 import {api} from 'api';
-import {ArrowRight, Close} from 'assets/icons';
+import {ArrowRight, Close, EditIcon} from 'assets/icons';
 import color from 'assets/styles/color';
 import fonts from 'assets/styles/fonts';
 import globalStyles from 'assets/styles/globalStyles';
@@ -130,23 +130,36 @@ const Basket = () => {
                 <Text style={styles.text1}>Summa:</Text>
               </View>
               <View style={styles.right}>
-                <View
-                  style={{
-                    backgroundColor:
-                      item?.status === 0 ? color.gray : color.green,
-                    paddingHorizontal: 10,
-                    borderRadius: 10,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <Text style={[styles.itemID, {color: '#fff', fontSize: 14}]}>
-                    {item?.status === 0
-                      ? 'Qoralama'
-                      : item?.status === 1
-                      ? 'To`lov kutilmoqda'
-                      : 'To`lov qilindi'}
-                  </Text>
+                <View style={[styles.row, {paddingHorizontal: 0, gap: 10}]}>
+                  <View
+                    style={{
+                      backgroundColor:
+                        item?.status === 0 ? color.gray : color.green,
+                      paddingHorizontal: 10,
+                      borderRadius: 10,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Text
+                      style={[styles.itemID, {color: '#fff', fontSize: 14}]}>
+                      {item?.status === 0
+                        ? 'Qoralama'
+                        : item?.status === 1
+                        ? 'To`lov kutilmoqda'
+                        : 'To`lov qilindi'}
+                    </Text>
+                  </View>
+                  {item?.status === 0 && (
+                    <TouchableOpacity
+                      onPress={() => {
+                        // @ts-ignore
+                        addListRef.current.open(item);
+                      }}>
+                      <EditIcon size={20} color={color.brandColor} />
+                    </TouchableOpacity>
+                  )}
                 </View>
+
                 <Text style={styles.text1}>
                   {item.date
                     ? convertTimestampToDate(item.date * 1000)

@@ -20,40 +20,75 @@ const AddListModal = ({getRef, onRefresh}: ModalProps) => {
   const [isFocus, setIsFocus] = useState(false);
   const [date, setDate] = useState(new Date());
   const customers = useStore(state => state.customers);
+  const [isEdit, setIsEdit] = useState(false);
+  const [listId, setListId] = useState<null | number>(null);
 
   const [open, setOpen] = useState(false);
 
-  const addList = useCallback((data: any) => {
-    if (!data.customer_id) {
-      data = {date: data.date};
-    }
-    api
-      .post('/product-lists', data)
-      .then(({data}) => {
-        logger(data);
-        setValue(0);
-        onRefresh();
-        setIsVisible(false);
-        navigate('ListView', data);
-        Toast.show({
-          type: 'success',
-          text1: 'Muvaffaqiyat',
-          text2: "List qo'shildi",
-        });
-      })
-      .catch(err => {
-        logger(err);
-        Toast.show({
-          type: 'error',
-          text1: 'Xatolik',
-          text2: "Ma'lumotlar saqlanmadi",
-        });
-      });
-  }, []);
+  const addList = useCallback(
+    (data: any) => {
+      if (!data.customer_id) {
+        data = {date: data.date};
+      }
+      if (isEdit) {
+        api
+          .put(`/product-lists/${listId}`, data)
+          .then(({data}) => {
+            logger(data);
+            setValue(0);
+            onRefresh();
+            setIsVisible(false);
+            Toast.show({
+              type: 'success',
+              text1: 'Muvaffaqiyat',
+              text2: 'List tahrirlandi',
+            });
+          })
+          .catch(err => {
+            logger(err);
+            Toast.show({
+              type: 'error',
+              text1: 'Xatolik',
+              text2: "Ma'lumotlar saqlanmadi",
+            });
+          });
+      } else
+        api
+          .post('/product-lists', data)
+          .then(({data}) => {
+            logger(data);
+            setValue(0);
+            onRefresh();
+            setIsVisible(false);
+            navigate('ListView', data);
+            Toast.show({
+              type: 'success',
+              text1: 'Muvaffaqiyat',
+              text2: "List qo'shildi",
+            });
+          })
+          .catch(err => {
+            logger(err);
+            Toast.show({
+              type: 'error',
+              text1: 'Xatolik',
+              text2: "Ma'lumotlar saqlanmadi",
+            });
+          });
+    },
+    [isEdit, listId, onRefresh],
+  );
 
   React.useEffect(() => {
     let ref = {
-      open: () => {
+      open: (data: any) => {
+        if (data) {
+          logger(data);
+          setValue(data.customer_id);
+          setDate(new Date(data.date * 1000));
+          setListId(data.id);
+          setIsEdit(true);
+        }
         setIsVisible(true);
       },
       close: () => {
@@ -74,7 +109,9 @@ const AddListModal = ({getRef, onRefresh}: ModalProps) => {
       onBackdropPress={() => setIsVisible(false)}
       isVisible={isVisible}>
       <View style={styles.container}>
-        <Text style={styles.title}>List qo'shish</Text>
+        <Text style={styles.title}>
+          {isEdit ? 'Tahrirlash' : "List qo'shish"}
+        </Text>
         <Dropdown
           style={[styles.dropdown, isFocus && {borderColor: 'blue'}]}
           placeholderStyle={styles.placeholderStyle}
@@ -94,7 +131,7 @@ const AddListModal = ({getRef, onRefresh}: ModalProps) => {
           labelField="full_name"
           // @ts-ignore
           valueField="id"
-          placeholder={!isFocus ? 'Sotuvchini tanlang' : '...'}
+          placeholder={!isFocus ? 'Olib keluvchini tanlang' : '...'}
           searchPlaceholder="Qidirish..."
           value={value}
           onFocus={() => setIsFocus(true)}
@@ -120,7 +157,7 @@ const AddListModal = ({getRef, onRefresh}: ModalProps) => {
           }
           mode="contained"
           style={{marginTop: 10}}>
-          Qo'shish
+          {isEdit ? 'Tasdiqlash' : "Qo'shish"}
         </Button>
         <DatePicker
           modal
