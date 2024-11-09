@@ -10,6 +10,7 @@ import Setting from './Setting';
 import AddProduct from './Product/AddProduct';
 import ListView from './ListView';
 import CustomerInfo from './CustomerInfo';
+import SellerTabs from './SellerTabs';
 
 export {
   ListView,
@@ -24,4 +25,5 @@ export {
   Setting,
   AddProduct,
   CustomerInfo,
+  SellerTabs,
 };

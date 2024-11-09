@@ -1,7 +1,7 @@
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {BottomTabType} from 'types';
-import {Platform, Text, View} from 'react-native';
+import {Text} from 'react-native';
 import Main from 'screens/Tabs/Home';
 import color from 'assets/styles/color';
 import fonts from 'assets/styles/fonts';
@@ -9,14 +9,12 @@ import {
   BasketTab,
   CustomersTab,
   HomeTab,
-  SellersTab,
   StatisticsTab,
   WerhouseTab,
 } from 'assets/icons';
 import Werhouse from './Wehouse';
 import Customers from './Customers';
 import Statistics from './Statistics';
-import Sellers from './Sellers';
 import Basket from './Baked';
 
 const Tab = createBottomTabNavigator<BottomTabType>();

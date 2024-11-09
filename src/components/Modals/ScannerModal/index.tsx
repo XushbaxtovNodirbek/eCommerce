@@ -7,11 +7,7 @@ import {
   useCameraPermission,
   useCodeScanner,
 } from 'react-native-vision-camera';
-import {
-  BottomSheetModal,
-  BottomSheetModalProvider,
-  BottomSheetBackdrop,
-} from '@gorhom/bottom-sheet';
+import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 
 type ModalProps = {
   getRef: (ref: any) => void;
@@ -55,36 +51,36 @@ const ScannerModal = ({getRef, getCode}: ModalProps) => {
     },
   });
 
-  const renderBackdrop = (props: any) => (
+  const renderBackdrop = () => (
     <Pressable
-      style={[StyleSheet.absoluteFill]}
+      style={[
+        StyleSheet.absoluteFill,
+        {backgroundColor: color.black, opacity: 0.5},
+      ]}
       onPress={() => bottomSheetModalRef.current?.dismiss()}
     />
   );
 
   return (
-    <BottomSheetModalProvider>
-      <BottomSheetModal
-        ref={bottomSheetModalRef}
-        index={1}
-        bottomInset={0}
-        style={styles.modal}
-        enablePanDownToClose={true}
-        snapPoints={snapPoints}
-        backdropComponent={renderBackdrop} // Add backdrop here
-      >
-        <View style={styles.container}>
-          {device && (
-            <Camera
-              isActive={true}
-              device={device}
-              style={StyleSheet.absoluteFill}
-              codeScanner={codeScanner}
-            />
-          )}
-        </View>
-      </BottomSheetModal>
-    </BottomSheetModalProvider>
+    <BottomSheetModal
+      ref={bottomSheetModalRef}
+      index={1}
+      bottomInset={0}
+      style={styles.modal}
+      enablePanDownToClose={true}
+      snapPoints={snapPoints}
+      backdropComponent={renderBackdrop}>
+      <View style={styles.container}>
+        {device && (
+          <Camera
+            isActive={true}
+            device={device}
+            style={StyleSheet.absoluteFill}
+            codeScanner={codeScanner}
+          />
+        )}
+      </View>
+    </BottomSheetModal>
   );
 };
 

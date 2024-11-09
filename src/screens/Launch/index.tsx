@@ -7,6 +7,8 @@ import {Avatar} from 'react-native-paper';
 import useStore from 'store';
 import {setToken} from 'api';
 import logger from 'helpers/logger';
+// @ts-ignore
+import {get} from 'lodash';
 
 const Launch = () => {
   const {userData} = useStore();
@@ -17,7 +19,11 @@ const Launch = () => {
     setTimeout(() => {
       if (userData.auth_token) {
         setToken(userData.auth_token);
-        reset('Tabs', 0);
+        if (get(userData, 'user_role') === 'seller') {
+          reset('Tabs', 0);
+        } else {
+          reset('SellerTabs', 0);
+        }
       } else {
         reset('Auth', 0);
       }

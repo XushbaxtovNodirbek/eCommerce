@@ -13,6 +13,7 @@ export type NavigatorType = {
   AddProduct: undefined;
   ListView: undefined;
   CustomerInfo: undefined;
+  SellerTabs: undefined;
 };
 export type BottomTabType = {
   Home: undefined;
@@ -22,12 +23,16 @@ export type BottomTabType = {
   Sellers: undefined;
   Basket: undefined;
 };
+export type SellerBottomTabType = {
+  Home: undefined;
+};
 
 export type screens =
   | 'Launch'
   | 'Home'
   | 'Setting'
   | 'Auth'
+  | 'SellerTabs'
   | 'Customers'
   | 'Tabs'
   | 'Statistics'

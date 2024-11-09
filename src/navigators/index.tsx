@@ -9,6 +9,7 @@ import {
   Setting,
   Statistics,
   Tabs,
+  SellerTabs,
 } from 'screens';
 import {NavigatorType} from '../types';
 import Werhouse from 'screens/Tabs/Wehouse';
@@ -25,6 +26,7 @@ function Navigator() {
       <Stack.Screen name="Home" component={Main} />
       <Stack.Screen name="Auth" component={Auth} />
       <Stack.Screen name="Tabs" component={Tabs} />
+      <Stack.Screen name="SellerTabs" component={SellerTabs} />
       <Stack.Screen name="Werhouse" component={Werhouse} />
       <Stack.Screen name="Statistics" component={Statistics} />
       <Stack.Screen name="Setting" component={Setting} />

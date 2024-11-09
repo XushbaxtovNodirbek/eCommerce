@@ -1,5 +1,5 @@
 import BottomSheet, {
-  BottomSheetModal,
+  BottomSheetBackdrop,
   BottomSheetModalProvider,
   BottomSheetScrollView,
 } from '@gorhom/bottom-sheet';
@@ -13,19 +13,13 @@ import ScannerModal from 'components/Modals/ScannerModal';
 import logger from 'helpers/logger';
 import React, {useCallback, useEffect, useState} from 'react';
 import {
-  Dimensions,
   Keyboard,
-  KeyboardAvoidingView,
-  Platform,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import {FlatList} from 'react-native-gesture-handler';
-import Modal from 'react-native-modal';
 import {Button} from 'react-native-paper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
@@ -47,7 +41,7 @@ const AddProductToListModal = ({onRefresh, getRef}: ModalProps) => {
   const scannerRef = React.useRef(null);
   const bottomSheetModalRef = React.useRef<BottomSheet>(null);
 
-  const snapPoints = React.useMemo(() => ['40%', '41%'], []);
+  const snapPoints = React.useMemo(() => ['50%', '51%'], []);
 
   useEffect(() => {
     let ref = {
@@ -135,6 +129,9 @@ const AddProductToListModal = ({onRefresh, getRef}: ModalProps) => {
         enablePanDownToClose
         ref={bottomSheetModalRef}
         index={-1}
+        backdropComponent={({animatedIndex, ...props}) => (
+          <BottomSheetBackdrop animatedIndex={animatedIndex} {...props} />
+        )}
         onClose={() => {
           setValue(0);
           setPrice('');
@@ -154,9 +151,7 @@ const AddProductToListModal = ({onRefresh, getRef}: ModalProps) => {
         bottomInset={bottom}
         snapPoints={snapPoints}>
         <BottomSheetScrollView>
-          <Pressable
-            // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            style={styles.container}>
+          <Pressable style={styles.container}>
             <Text style={styles.title}>Mahsulot qo'shish</Text>
             <TextInput
               value={search}

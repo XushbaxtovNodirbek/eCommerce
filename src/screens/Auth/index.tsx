@@ -16,6 +16,7 @@ import {Person} from 'assets/icons';
 import {api, setToken} from 'api';
 import Toast from 'react-native-toast-message';
 import useStore from 'store';
+// @ts-ignore
 import {get} from 'lodash';
 import {reset} from 'navigators/NavigationService';
 
@@ -38,7 +39,10 @@ const Auth = () => {
       })
       .then(response => {
         showToast('success', 'Tabriklaymiz', 'Siz dasturga kirdingiz!');
-        setUserData({auth_token: get(response, 'data.access_token', '')});
+        setUserData({
+          auth_token: get(response, 'data.access_token', ''),
+          ...get(response, 'data', {}),
+        });
         setToken(get(response, 'data.access_token', ''));
         reset('Tabs', 0);
       })
