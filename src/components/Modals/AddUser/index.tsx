@@ -68,7 +68,7 @@ const AddUserModal = ({getRef}: ModalProps) => {
         setError('Manzil bo`sh bo`lishi mumkin emas');
         return;
       }
-      if (username === '') {
+      if (user.username === '') {
         api
           .post('/customers', user)
           .then(data => {
@@ -131,6 +131,7 @@ const AddUserModal = ({getRef}: ModalProps) => {
 
   return (
     <Modal
+      backdropColor={color.lgray}
       backdropOpacity={0.7}
       isVisible={visible}
       style={styles.modal}
@@ -188,29 +189,34 @@ const AddUserModal = ({getRef}: ModalProps) => {
                 setUsername(text.split(' ').join('_').toLowerCase());
               }}
               placeholder="Ism Familiya"
+              width={'100%'}
             />
             <TextInput
               readonly={true}
               value={username}
               setValue={setUsername}
               placeholder="Username"
+              width={'100%'}
             />
             <TextInput
               readonly={true}
               value={username}
               setValue={setUsername}
               placeholder="Parol"
+              width={'100%'}
             />
             <TextInput
               value={phone}
               setValue={setPhone}
               placeholder="Telefon raqam"
               isPhone={true}
+              width={'100%'}
             />
             <TextInput
               value={address}
               setValue={setAddress}
               placeholder="Manzil"
+              width={'100%'}
             />
             <Button
               mode="contained"
@@ -249,17 +255,20 @@ const AddUserModal = ({getRef}: ModalProps) => {
               value={fullName}
               setValue={setFullName}
               placeholder="Familiya"
+              width={'100%'}
             />
             <TextInput
               value={phone}
               setValue={setPhone}
               placeholder="Telefon raqam"
               isPhone={true}
+              width={'100%'}
             />
             <TextInput
               value={address}
               setValue={setAddress}
               placeholder="Manzil"
+              width={'100%'}
             />
             <Button
               onPress={() => {
@@ -330,6 +339,7 @@ const styles = StyleSheet.create({
     backgroundColor: color.brandColor,
   },
   form: {
+    width: '90%',
     marginTop: 10,
   },
 });

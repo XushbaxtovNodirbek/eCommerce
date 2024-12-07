@@ -78,6 +78,7 @@ const AddCategoryModal = ({getRef}: ModalProps) => {
     <Modal
       isVisible={visible}
       backdropOpacity={0.7}
+      backdropColor={color.lgray}
       style={styles.modal}
       deviceHeight={Dimensions.get('screen').height}
       animationIn="fadeInRight"

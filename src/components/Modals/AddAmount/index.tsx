@@ -76,7 +76,9 @@ const AddAmount = ({getRef, onRefresh}: ModalProps) => {
         logger(err);
       })
       .finally(() => {
-        onRefresh();
+        if (onRefresh) {
+          onRefresh();
+        }
       });
   }, [price, amount, sale_price, sale_price_min]);
 

@@ -18,6 +18,7 @@ import BasketTab from './BasketTab';
 import DeleteIcon from './DeleteIcon';
 import ArrowRight from './ArrowRight';
 import Close from './Close';
+import AddPerson from './AddPerson';
 
 export {
   ScanIcon,
@@ -40,4 +41,5 @@ export {
   DeleteIcon,
   ArrowRight,
   Close,
+  AddPerson,
 };

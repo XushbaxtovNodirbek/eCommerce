@@ -14,17 +14,20 @@ import Navigator from './src/navigators';
 import {_navigator} from './src/navigators/NavigationService';
 import Toast from 'react-native-toast-message';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 function App() {
   return (
-    <BottomSheetModalProvider>
-      <SafeAreaProvider>
-        <NavigationContainer ref={_navigator}>
-          <Navigator />
-        </NavigationContainer>
-        <Toast onPress={() => Toast.hide()} />
-      </SafeAreaProvider>
-    </BottomSheetModalProvider>
+    <GestureHandlerRootView style={{flex: 1}}>
+      <BottomSheetModalProvider>
+        <SafeAreaProvider>
+          <NavigationContainer ref={_navigator}>
+            <Navigator />
+          </NavigationContainer>
+          <Toast onPress={() => Toast.hide()} />
+        </SafeAreaProvider>
+      </BottomSheetModalProvider>
+    </GestureHandlerRootView>
   );
 }
 

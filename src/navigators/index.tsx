@@ -10,6 +10,7 @@ import {
   Statistics,
   Tabs,
   SellerTabs,
+  CreateOrder,
 } from 'screens';
 import {NavigatorType} from '../types';
 import Werhouse from 'screens/Tabs/Wehouse';
@@ -33,6 +34,7 @@ function Navigator() {
       <Stack.Screen name="AddProduct" component={AddProduct} />
       <Stack.Screen name="ListView" component={ListView} />
       <Stack.Screen name="CustomerInfo" component={CustomerInfo} />
+      <Stack.Screen name="CreateOrder" component={CreateOrder} />
     </Stack.Navigator>
   );
 }

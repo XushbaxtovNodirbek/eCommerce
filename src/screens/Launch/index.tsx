@@ -19,7 +19,7 @@ const Launch = () => {
     setTimeout(() => {
       if (userData.auth_token) {
         setToken(userData.auth_token);
-        if (get(userData, 'user_role') === 'seller') {
+        if (get(userData, 'user_role') !== 'seller') {
           reset('Tabs', 0);
         } else {
           reset('SellerTabs', 0);

@@ -36,7 +36,9 @@ const AddListModal = ({getRef, onRefresh}: ModalProps) => {
           .then(({data}) => {
             logger(data);
             setValue(0);
-            onRefresh();
+            if (onRefresh) {
+              onRefresh();
+            }
             setIsVisible(false);
             Toast.show({
               type: 'success',
@@ -58,7 +60,9 @@ const AddListModal = ({getRef, onRefresh}: ModalProps) => {
           .then(({data}) => {
             logger(data);
             setValue(0);
-            onRefresh();
+            if (onRefresh) {
+              onRefresh();
+            }
             setIsVisible(false);
             navigate('ListView', data);
             Toast.show({
@@ -101,6 +105,7 @@ const AddListModal = ({getRef, onRefresh}: ModalProps) => {
 
   return (
     <Modal
+      backdropColor={color.lgray}
       backdropOpacity={0.7}
       style={styles.modal}
       deviceHeight={Dimensions.get('screen').height}

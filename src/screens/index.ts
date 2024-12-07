@@ -11,6 +11,7 @@ import AddProduct from './Product/AddProduct';
 import ListView from './ListView';
 import CustomerInfo from './CustomerInfo';
 import SellerTabs from './SellerTabs';
+import CreateOrder from './CreateOrder';
 
 export {
   ListView,
@@ -26,4 +27,5 @@ export {
   AddProduct,
   CustomerInfo,
   SellerTabs,
+  CreateOrder,
 };

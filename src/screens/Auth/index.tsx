@@ -44,7 +44,11 @@ const Auth = () => {
           ...get(response, 'data', {}),
         });
         setToken(get(response, 'data.access_token', ''));
-        reset('Tabs', 0);
+        if (get(response, 'data.user_role', '') === 'admin') {
+          reset('Tabs', 0);
+        } else {
+          reset('SellerTabs', 1);
+        }
       })
       .catch(error => {
         showToast('error', 'Xatolik', "Login yoki parol noto'g'ri!");

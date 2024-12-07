@@ -5,6 +5,7 @@ export type NavigatorType = {
   };
   Auth: undefined;
   Tabs: undefined;
+  CreateOrder: undefined;
   Werhouse: undefined;
   Customers: undefined;
   Statistics: undefined;
@@ -25,10 +26,12 @@ export type BottomTabType = {
 };
 export type SellerBottomTabType = {
   Home: undefined;
+  Customers: undefined;
 };
 
 export type screens =
   | 'Launch'
+  | 'CreateOrder'
   | 'Home'
   | 'Setting'
   | 'Auth'

@@ -17,7 +17,7 @@ import {
 } from 'react-native';
 import {RefreshControl} from 'react-native-gesture-handler';
 import {ActivityIndicator, Avatar} from 'react-native-paper';
-import Sellers from '../Sellers';
+// import Sellers from '../Sellers';
 import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
 import {navigate} from 'navigators/NavigationService.ts';
 import useStore from 'store';
@@ -178,16 +178,15 @@ const Customers = () => {
             );
           }}
         />
-        <AddBtn getRef={r => (addBtnRef.current = r)} />
       </View>
     );
   }, []);
 
-  const SellersRoute = () => <Sellers />;
+  // const SellersRoute = () => <Sellers />;
 
   const renderScene = SceneMap({
     first: CustomersRoute,
-    second: SellersRoute,
+    // second: SellersRoute,
   });
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
@@ -196,21 +195,22 @@ const Customers = () => {
   ]);
 
   return (
-    <TabView
-      navigationState={{index, routes}}
-      renderScene={renderScene}
-      onIndexChange={setIndex}
-      initialLayout={{width: width}}
-      renderTabBar={props => (
-        <TabBar
-          {...props}
-          indicatorStyle={{backgroundColor: color.brandColor}}
-          style={{backgroundColor: color.white}}
-          activeColor={color.brandColor}
-          inactiveColor={color.gray}
-        />
-      )}
-    />
+    // <TabView
+    //   navigationState={{index, routes}}
+    //   renderScene={renderScene}
+    //   onIndexChange={setIndex}
+    //   initialLayout={{width: width}}
+    //   renderTabBar={props => (
+    //     <TabBar
+    //       {...props}
+    //       indicatorStyle={{backgroundColor: color.brandColor}}
+    //       style={{backgroundColor: color.white}}
+    //       activeColor={color.brandColor}
+    //       inactiveColor={color.gray}
+    //     />
+    //   )}
+    // />
+    <CustomersRoute />
   );
 };
 
@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 10,
-    paddingTop: 5,
+    // paddingTop: 5,
     marginBottom: 2,
   },
   call: {

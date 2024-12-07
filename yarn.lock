@@ -3304,6 +3304,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/lodash@npm:^4.17.7":
+  version: 4.17.13
+  resolution: "@types/lodash@npm:4.17.13"
+  checksum: d0bf8fbd950be71946e0076b30fd40d492293baea75f05931b6b5b906fd62583708c6229abdb95b30205ad24ce1ed2f48bc9d419364f682320edd03405cc0c7e
+  languageName: node
+  linkType: hard
+
 "@types/node@npm:*":
   version: 20.11.19
   resolution: "@types/node@npm:20.11.19"
@@ -5974,6 +5981,7 @@ __metadata:
     "@react-navigation/bottom-tabs": ^6.6.1
     "@react-navigation/native": ^6.1.10
     "@react-navigation/stack": ^6.3.21
+    "@types/lodash": ^4.17.7
     "@types/react": ^18.2.6
     "@types/react-test-renderer": ^18.0.0
     axios: ^1.6.7
@@ -5987,6 +5995,7 @@ __metadata:
     react: 18.2.0
     react-i18next: ^14.0.5
     react-native: 0.73.5
+    react-native-collapsible: ^1.6.0
     react-native-date-picker: ^5.0.7
     react-native-element-dropdown: ^2.12.1
     react-native-gesture-handler: ^2.15.0
@@ -5997,7 +6006,7 @@ __metadata:
     react-native-paper: ^5.12.5
     react-native-reanimated: ^3.15.1
     react-native-safe-area-context: ^4.9.0
-    react-native-screens: ^3.29.0
+    react-native-screens: ^4.1.0
     react-native-svg: ^14.1.0
     react-native-tab-view: ^3.5.2
     react-native-toast-message: ^2.2.0
@@ -9144,6 +9153,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-collapsible@npm:^1.6.0":
+  version: 1.6.2
+  resolution: "react-native-collapsible@npm:1.6.2"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: bb5ecf1c678c101d642e8063db767f781225ac16c9a7c032495dfe759d694588707edf0c452e2691e68ac3ebd68e6b90fbfa8089ff2d0c1875a91d6e786cadd9
+  languageName: node
+  linkType: hard
+
 "react-native-date-picker@npm:^5.0.7":
   version: 5.0.7
   resolution: "react-native-date-picker@npm:5.0.7"
@@ -9274,16 +9293,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-screens@npm:^3.29.0":
-  version: 3.29.0
-  resolution: "react-native-screens@npm:3.29.0"
+"react-native-screens@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "react-native-screens@npm:4.1.0"
   dependencies:
     react-freeze: ^1.0.0
     warn-once: ^0.1.0
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: c1879eea8386f32c2655fedd79d41d8e25d2f4e7f883abbcad2c747ea7ac859f4a7f469475a519948e7c5ea317a7ebd8df92c6365627f6a5da1e4a208cece7e1
+  checksum: 70a1c522b000758ca066b30062b7902c3df15ee5d1bccc4e59901d207e278cb6852f7c883a5df5c93f1415fd4089de2d4261e3f3a7cd5150c1aad8674193c728
   languageName: node
   linkType: hard
 
